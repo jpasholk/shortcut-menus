@@ -269,65 +269,43 @@ import Layout from '../layouts/Layout.astro';
     }
 
     // Add this helper function near the top of your script
-    function fallbackCopyToClipboard(text: string): void {
-        // Create temporary textarea with improved mobile support
+    async function copyToClipboard(text: string): Promise<boolean> {
+        // For modern browsers on secure contexts
+        if (navigator.clipboard && window.isSecureContext) {
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (err) {
+                console.log('Clipboard API failed, trying fallback...');
+            }
+        }
+
+        // Fallback for Safari Mobile and older browsers
         const textArea = document.createElement('textarea');
         textArea.value = text;
-        
-        // Improved mobile styles
+
+        // Positioning off-screen
         textArea.style.position = 'fixed';
-        textArea.style.top = '0';
-        textArea.style.left = '0';
-        textArea.style.width = '100%';
-        textArea.style.height = '100%';
+        textArea.style.top = '-9999px';
+        textArea.style.left = '-9999px';
         textArea.style.opacity = '0';
-        textArea.style.zIndex = '100000';  // Ensure it's on top
         
         document.body.appendChild(textArea);
         
-        // Special handling for iOS
-        const range = document.createRange();
-        range.selectNodeContents(textArea);
-        
-        const selection = window.getSelection();
-        if (selection) {
-            selection.removeAllRanges();
-            selection.addRange(range);
-        }
-        
-        textArea.setSelectionRange(0, textArea.value.length);
-        textArea.focus();
-        
         try {
-            document.execCommand('copy');
-            if (notification) {
-                notification.textContent = menuData.isAdvancedMode ? 'JSON copied to clipboard!' : 'VCARD copied to clipboard!';
-                notification.classList.remove('translate-y-full', 'opacity-0');
-                setTimeout(() => {
-                    notification.classList.add('translate-y-full', 'opacity-0');
-                }, 3000);
-            }
+            // iOS specific focus and selection handling
+            textArea.focus();
+            textArea.select();
+            textArea.setSelectionRange(0, text.length);
+            
+            const successful = document.execCommand('copy');
+            document.body.removeChild(textArea);
+            return successful;
         } catch (err) {
+            document.body.removeChild(textArea);
             console.error('Fallback copy failed:', err);
-            // Show a mobile-friendly alert
-            const msg = 'Please manually select and copy the text.';
-            if (notification) {
-                notification.textContent = msg;
-                notification.classList.remove('translate-y-full', 'opacity-0');
-                setTimeout(() => {
-                    notification.classList.add('translate-y-full', 'opacity-0');
-                }, 5000);
-            } else {
-                alert(msg);
-            }
-            // Keep the textarea visible for manual copying
-            textArea.style.opacity = '1';
-            textArea.style.backgroundColor = 'white';
-            textArea.style.color = 'black';
-            return;
+            return false;
         }
-        
-        document.body.removeChild(textArea);
     }
 
     // Initialize Lucide icons
@@ -611,36 +589,29 @@ END:VCARD`;
                 };
                 outputData = JSON.stringify(exportData, null, 2);
             } else {
-                outputData = `BEGIN:VCARD
-VERSION:3.0
-N;CHARSET=utf-8:${menuData.title};
-ORG:${menuData.subtitle};
-NOTE:${menuData.data};
-PHOTO;ENCODING=b:${pngBase64};
-END:VCARD`;
+                outputData = `BEGIN:VCARD\nVERSION:3.0\nN;CHARSET=utf-8:${menuData.title};\nORG:${menuData.subtitle};\nNOTE:${menuData.data};\nPHOTO;ENCODING=b:${pngBase64};\nEND:VCARD`;
             }
             
-            // Use fallback first on iOS
-            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                fallbackCopyToClipboard(outputData);
+            const success = await copyToClipboard(outputData);
+            
+            if (success && notification) {
+                notification.textContent = menuData.isAdvancedMode ? 'JSON copied to clipboard!' : 'VCARD copied to clipboard!';
+                notification.classList.remove('translate-y-full', 'opacity-0');
+                setTimeout(() => {
+                    notification.classList.add('translate-y-full', 'opacity-0');
+                }, 3000);
             } else {
-                try {
-                    await navigator.clipboard.writeText(outputData);
-                    if (notification) {
-                        notification.textContent = menuData.isAdvancedMode ? 'JSON copied to clipboard!' : 'VCARD copied to clipboard!';
-                        notification.classList.remove('translate-y-full', 'opacity-0');
-                        setTimeout(() => {
-                            notification.classList.add('translate-y-full', 'opacity-0');
-                        }, 3000);
-                    }
-                } catch (clipboardErr) {
-                    console.log('Modern clipboard API failed, trying fallback...');
-                    fallbackCopyToClipboard(outputData);
-                }
+                throw new Error('Copy failed');
             }
         } catch (err) {
-            console.error('Failed to copy:', err);
-            alert('Failed to convert data. Please try again.');
+            console.error('Copy failed:', err);
+            if (notification) {
+                notification.textContent = 'Could not copy to clipboard. Please try again.';
+                notification.classList.remove('translate-y-full', 'opacity-0');
+                setTimeout(() => {
+                    notification.classList.add('translate-y-full', 'opacity-0');
+                }, 3000);
+            }
         }
     });
 
