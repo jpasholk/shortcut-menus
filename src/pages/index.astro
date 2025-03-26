@@ -268,42 +268,13 @@ import Layout from '../layouts/Layout.astro';
         });
     }
 
-    // Add this helper function near the top of your script
+    // Replace the existing copyToClipboard function with this simpler version
     async function copyToClipboard(text: string): Promise<boolean> {
-        // For modern browsers on secure contexts
-        if (navigator.clipboard && window.isSecureContext) {
-            try {
-                await navigator.clipboard.writeText(text);
-                return true;
-            } catch (err) {
-                console.log('Clipboard API failed, trying fallback...');
-            }
-        }
-
-        // Fallback for Safari Mobile and older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-
-        // Positioning off-screen
-        textArea.style.position = 'fixed';
-        textArea.style.top = '-9999px';
-        textArea.style.left = '-9999px';
-        textArea.style.opacity = '0';
-        
-        document.body.appendChild(textArea);
-        
         try {
-            // iOS specific focus and selection handling
-            textArea.focus();
-            textArea.select();
-            textArea.setSelectionRange(0, text.length);
-            
-            const successful = document.execCommand('copy');
-            document.body.removeChild(textArea);
-            return successful;
+            await navigator.clipboard.writeText(text);
+            return true;
         } catch (err) {
-            document.body.removeChild(textArea);
-            console.error('Fallback copy failed:', err);
+            console.error('Failed to copy:', err);
             return false;
         }
     }
@@ -591,22 +562,31 @@ END:VCARD`;
             } else {
                 outputData = `BEGIN:VCARD\nVERSION:3.0\nN;CHARSET=utf-8:${menuData.title};\nORG:${menuData.subtitle};\nNOTE:${menuData.data};\nPHOTO;ENCODING=b:${pngBase64};\nEND:VCARD`;
             }
-            
+
             const success = await copyToClipboard(outputData);
             
             if (success && notification) {
-                notification.textContent = menuData.isAdvancedMode ? 'JSON copied to clipboard!' : 'VCARD copied to clipboard!';
+                // Show success notification
+                notification.textContent = menuData.isAdvancedMode ? 'JSON copied!' : 'VCARD copied!';
                 notification.classList.remove('translate-y-full', 'opacity-0');
+                
+                // Add success styling to button
+                copyButton.classList.add('bg-green-600', 'dark:bg-green-500');
+                copyButton.classList.remove('bg-indigo-600', 'dark:bg-indigo-500');
+                
+                // Reset after animation
                 setTimeout(() => {
                     notification.classList.add('translate-y-full', 'opacity-0');
-                }, 3000);
+                    copyButton.classList.remove('bg-green-600', 'dark:bg-green-500');
+                    copyButton.classList.add('bg-indigo-600', 'dark:bg-indigo-500');
+                }, 2000);
             } else {
                 throw new Error('Copy failed');
             }
         } catch (err) {
             console.error('Copy failed:', err);
             if (notification) {
-                notification.textContent = 'Could not copy to clipboard. Please try again.';
+                notification.textContent = 'Could not copy. Please try again.';
                 notification.classList.remove('translate-y-full', 'opacity-0');
                 setTimeout(() => {
                     notification.classList.add('translate-y-full', 'opacity-0');
