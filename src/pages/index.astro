@@ -268,14 +268,54 @@ import Layout from '../layouts/Layout.astro';
         });
     }
 
-    // Replace the existing copyToClipboard function with this simpler version
+    // Update the copyToClipboard function to handle Safari's requirements
     async function copyToClipboard(text: string): Promise<boolean> {
+        // Create a promise that resolves with the text
+        const textPromise = new Promise((resolve) => resolve(new Blob([text], { type: 'text/plain' })));
+
         try {
-            await navigator.clipboard.writeText(text);
+            // Pass the promise directly to ClipboardItem
+            await navigator.clipboard.write([
+                new ClipboardItem({
+                    'text/plain': textPromise
+                })
+            ]);
             return true;
         } catch (err) {
-            console.error('Failed to copy:', err);
-            return false;
+            console.error('Modern clipboard API failed, trying fallback...', err);
+            
+            // Fallback for older browsers
+            try {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                
+                if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                    textArea.contentEditable = 'true';
+                    textArea.readOnly = false;
+                    
+                    const range = document.createRange();
+                    range.selectNodeContents(textArea);
+                    const selection = window.getSelection();
+                    if (selection) {
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    }
+                    textArea.setSelectionRange(0, 999999);
+                } else {
+                    textArea.select();
+                }
+                
+                const successful = document.execCommand('copy');
+                document.body.removeChild(textArea);
+                return successful;
+            } catch (fallbackErr) {
+                console.error('Fallback copy failed:', fallbackErr);
+                return false;
+            }
         }
     }
 
@@ -560,7 +600,13 @@ END:VCARD`;
                 };
                 outputData = JSON.stringify(exportData, null, 2);
             } else {
-                outputData = `BEGIN:VCARD\nVERSION:3.0\nN;CHARSET=utf-8:${menuData.title};\nORG:${menuData.subtitle};\nNOTE:${menuData.data};\nPHOTO;ENCODING=b:${pngBase64};\nEND:VCARD`;
+                outputData = `BEGIN:VCARD
+VERSION:3.0
+N;CHARSET=utf-8:${menuData.title};
+ORG:${menuData.subtitle};
+NOTE:${menuData.data};
+PHOTO;ENCODING=b:${pngBase64};
+END:VCARD`;
             }
 
             const success = await copyToClipboard(outputData);
