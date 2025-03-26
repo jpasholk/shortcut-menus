@@ -1,11 +1,661 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <Layout>
-	<Welcome />
+    <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <header class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">Shortcut Menus (Beta 1)</h1>
+                <p class="text-gray-600 dark:text-gray-300 text-xl">iOS Shortcut Menu Generator</p>
+            </header>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Form Section -->
+                <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex flex-col min-h-[600px]">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Create Your Menu</h2>
+                        
+                        <!-- Circular Toggle -->
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+                                Circular
+                            </span>
+                            <div class="relative">
+                                <input 
+                                    type="checkbox" 
+                                    id="circular-mask" 
+                                    class="sr-only peer"
+									checked
+                                >
+                                <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer 
+                                            peer-checked:after:translate-x-full after:content-[''] 
+                                            after:absolute after:top-0.5 after:left-[2px] after:bg-white 
+                                            after:rounded-full after:h-5 after:w-5 after:transition-all 
+                                            peer-checked:bg-indigo-600">
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <!-- Rest of the form content -->
+                    <div class="flex-1 flex flex-col space-y-8">
+                        <!-- Menu Content Form -->
+                        <form id="menuForm" class="space-y-6">
+                            <!-- Title Input -->
+                            <div class="form-group">
+                                <label for="menu-title" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                                    Menu Title
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="menu-title" 
+                                    name="menu-title"
+                                    placeholder="Enter menu title..."
+                                    class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
+                                           text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 
+                                           focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 
+                                           dark:focus:border-indigo-400"
+                                >
+                            </div>
+
+                            <!-- Subtitle Input -->
+                            <div class="form-group">
+                                <label for="menu-subtitle" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                                    Menu Subtitle
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="menu-subtitle" 
+                                    name="menu-subtitle"
+                                    placeholder="Enter menu subtitle..." 
+                                    class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
+                                           text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 
+                                           focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 
+                                           dark:focus:border-indigo-400"
+                                >
+                            </div>
+
+                            <!-- Data Input -->
+                            <div class="form-group">
+                                <label for="menu-data" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                                    Menu Data
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="menu-data" 
+                                    name="menu-data"
+                                    placeholder="Enter menu data..." 
+                                    class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
+                                           text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 
+                                           focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 
+                                           dark:focus:border-indigo-400"
+                                >
+                            </div>
+                        </form>
+
+                        <!-- Icon Section -->
+                        <div class="space-y-6">
+                            <!-- Icon Input -->
+                            <div class="form-group">
+                                <label for="icon-name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                                    Enter Lucide Icon Name
+                                </label>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                                    Find icons at <a href="https://lucide.dev/icons" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300">lucide.dev/icons</a>
+                                </p>
+                                <div class="flex gap-4 w-full">
+                                    <input 
+                                        type="text" 
+                                        id="icon-name" 
+                                        name="icon-name"
+                                        placeholder="Try 'layers-2' or 'smartphone'..." 
+                                        class="flex-1 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
+                                               text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 
+                                               focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 
+                                               dark:focus:border-indigo-400"
+                                    >
+                                    <button 
+                                        type="button"
+                                        id="add-icon"
+                                        class="px-4 py-2 bg-indigo-600 text-white dark:bg-indigo-500 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 
+                                               focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors"
+                                    >
+                                        Try Icon
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Color Inputs -->
+                            <div class="form-group">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-4">
+                                    Icon Colors
+                                </label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm text-gray-500 dark:text-gray-400 mb-2">
+                                            Icon Color
+                                        </label>
+                                        <input 
+                                            type="color" 
+                                            id="icon-color" 
+                                            value="#000000"
+                                            class="p-1 w-full h-10 rounded-md cursor-pointer border border-gray-300 dark:border-gray-600"
+                                        >
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm text-gray-500 dark:text-gray-400 mb-2">
+                                            Background
+                                        </label>
+                                        <input 
+                                            type="color" 
+                                            id="bg-color" 
+                                            value="#ffffff"
+                                            class="p-1 w-full h-10 rounded-md cursor-pointer border border-gray-300 dark:border-gray-600"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Preview Section -->
+                <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex flex-col min-h-[600px]">
+                    <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Preview & Export</h2>
+                    
+                    <div class="flex-1 flex flex-col">
+                        <div class="flex-1">
+                            <div id="menu-preview" class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 flex items-center justify-center bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                        <i data-lucide="home" class="w-6 h-6 text-gray-900 dark:text-white"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <h3 class="font-medium text-gray-900 dark:text-white"></h3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- JSON Output -->
+                            <div class="mt-6">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h3 class="text-lg font-medium text-gray-800 dark:text-white">Output</h3>
+                                    
+                                    <!-- Advanced Toggle -->
+                                    <label class="flex items-center space-x-3 cursor-pointer">
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+                                            Advanced
+                                        </span>
+                                        <div class="relative">
+                                            <input 
+                                                type="checkbox" 
+                                                id="advanced-toggle" 
+                                                class="sr-only peer"
+                                            >
+                                            <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer 
+                                                        peer-checked:after:translate-x-full after:content-[''] 
+                                                        after:absolute after:top-0.5 after:left-[2px] after:bg-white 
+                                                        after:rounded-full after:h-5 after:w-5 after:transition-all 
+                                                        peer-checked:bg-indigo-600">
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                                <pre id="output-preview" class="bg-gray-900 text-gray-100 dark:bg-gray-700 dark:text-gray-100 p-4 rounded-md overflow-x-auto text-sm min-h-[300px]"></pre>
+                            </div>
+                        </div>
+
+                        <!-- Export Actions -->
+                        <div class="flex gap-4">
+                            <button 
+                                id="copyButton"
+                                class="flex-1 bg-indigo-600 text-white dark:bg-indigo-500 
+                                       hover:bg-indigo-700 dark:hover:bg-indigo-600 
+                                       focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors rounded-md"
+                            >
+                                Copy JSON
+                            </button>
+                            <button 
+                                id="downloadButton"
+                                class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-200 
+                                       hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 
+                                       focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors"
+                            >
+                                Download JSON
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div 
+        id="notification" 
+        class="fixed bottom-4 right-4 bg-green-500 dark:bg-green-600 text-white px-4 py-2 rounded-md shadow-lg 
+               transform translate-y-full opacity-0 transition-all duration-300"
+    >
+        JSON copied to clipboard!
+    </div>
 </Layout>
+
+<script>
+    // Declare lucide property on Window interface
+    declare global {
+        interface Window {
+            lucide: {
+                createIcons(options?: { elements?: HTMLElement[] }): void;
+            }
+        }
+    }
+
+    // Add this function at the top of your script
+    async function waitForLucide(): Promise<void> {
+        if (window.lucide) return;
+        return new Promise((resolve) => {
+            const checkInterval = setInterval(() => {
+                if (window.lucide) {
+                    clearInterval(checkInterval);
+                    resolve();
+                }
+            }, 100);
+        });
+    }
+
+    // Initialize Lucide icons
+    window.lucide.createIcons();
+
+    // State management
+    let menuData = {
+        title: "",
+        subtitle: "",
+        iconName: "",
+        prompt: "",
+        data: "",
+        iconColor: "#000000",
+        backgroundColor: "#ffffff",
+        isCircular: true,
+        isAdvancedMode: false
+    };
+
+    // DOM Elements
+    const menuForm = document.getElementById('menuForm');
+    const menuTitleInput = document.getElementById('menu-title');
+    const menuSubtitleInput = document.getElementById('menu-subtitle');
+    const menuPromptInput = document.getElementById('menu-prompt');
+    const menuDataInput = document.getElementById('menu-data');
+    const menuPreview = document.getElementById('menu-preview');
+    const jsonPreview = document.getElementById('json-preview');
+    const copyButton = document.getElementById('copyButton');
+    const downloadButton = document.getElementById('downloadButton');
+    const notification = document.getElementById('notification');
+    const iconNameInput = document.getElementById('icon-name');
+    const addIconButton = document.getElementById('add-icon');
+    const iconColorInput = document.getElementById('icon-color');
+    const backgroundColorInput = document.getElementById('background-color');
+    const bgColorInput = document.getElementById('bg-color');
+    const circularMaskToggle = document.getElementById('circular-mask');
+    const advancedToggle = document.getElementById('advanced-toggle');
+    const outputPreview = document.getElementById('output-preview');
+
+    async function validateIcon(iconName: string): Promise<boolean> {
+        if (!iconName) {
+            console.log('No icon name provided');
+            return false;
+        }
+        
+        // Wait for Lucide to be ready
+        await waitForLucide();
+        
+        console.log('Starting validation for icon:', iconName);
+        
+        const temp = document.createElement('div');
+        temp.innerHTML = `<i data-lucide="${iconName}"></i>`;
+        document.body.appendChild(temp); // Temporarily add to DOM
+        
+        try {
+            await window.lucide.createIcons({
+                elements: [temp]
+            });
+            
+            // Check for SVG
+            const svg = temp.querySelector('svg');
+            const isValid = svg !== null;
+            console.log('Validation result:', { iconName, isValid, svg: svg?.outerHTML });
+            
+            document.body.removeChild(temp); // Clean up
+            return isValid;
+        } catch (error) {
+            if (temp.parentNode) document.body.removeChild(temp); // Clean up on error
+            console.error('Error during validation:', error);
+            return false;
+        }
+    }
+
+    async function svgToPngBase64(iconName: string): Promise<string> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                // Create temporary div
+                const temp = document.createElement('div');
+                temp.innerHTML = `<i data-lucide="${iconName}"></i>`;
+                document.body.appendChild(temp);
+                
+                // Create the Lucide icon
+                await window.lucide.createIcons({
+                    elements: [temp]
+                });
+                
+                // Get the SVG element
+                const svg = temp.querySelector('svg');
+                if (!svg) {
+                    throw new Error('No SVG found');
+                }
+                
+                // Set SVG dimensions to 92x92
+                svg.setAttribute('width', '92');
+                svg.setAttribute('height', '92');
+                svg.style.color = menuData.iconColor;
+                
+                // Convert SVG to data URL
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const svgDataUrl = `data:image/svg+xml;base64,${btoa(svgData)}`;
+                
+                // Create Image and Canvas
+                const img = new Image();
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                img.onload = () => {
+                    // Set canvas size to 123x123
+                    canvas.width = 123;
+                    canvas.height = 123;
+                    
+                    // Fill background
+                    if (ctx) {
+                        if (menuData.isCircular) {
+                            // Create circular clip path
+                            ctx.beginPath();
+                            ctx.arc(123/2, 123/2, 123/2, 0, Math.PI * 2);
+                            ctx.closePath();
+                            ctx.clip();
+                        }
+
+                        // Fill background color
+                        ctx.fillStyle = menuData.backgroundColor;
+                        ctx.fillRect(0, 0, 123, 123);
+                        
+                        // Calculate center position for 92x92 icon
+                        const x = (123 - 92) / 2; // Center horizontally
+                        const y = (123 - 92) / 2; // Center vertically
+                        
+                        // Draw image centered
+                        ctx.drawImage(img, x, y, 92, 92);
+                    }
+                    
+                    // Get base64 PNG and remove the prefix
+                    const fullBase64 = canvas.toDataURL('image/png');
+                    const base64Only = fullBase64.replace('data:image/png;base64,', '');
+                    
+                    // Clean up
+                    document.body.removeChild(temp);
+                    
+                    resolve(base64Only);
+                };
+                
+                img.onerror = (err) => {
+                    document.body.removeChild(temp);
+                    reject(err);
+                };
+                
+                // Start the conversion
+                img.src = svgDataUrl;
+                
+            } catch (error) {
+                console.error('PNG conversion failed:', error);
+                reject(error);
+            }
+        });
+    }
+
+    async function updatePreview() {
+        const iconToUse = menuData.iconName || 'home';
+        console.log('Updating preview with icon:', iconToUse);
+        
+        const previewHtml = `
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 flex items-center justify-center ${menuData.isCircular ? 'rounded-full' : 'rounded-lg'}"
+                     style="background-color: ${menuData.backgroundColor}">
+                    <i data-lucide="${iconToUse}" class="w-6 h-6"
+                       style="color: ${menuData.iconColor}"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-medium text-gray-900 dark:text-white">${menuData.title}</h3>
+                    ${menuData.subtitle ? `<p class="text-sm text-gray-500 dark:text-gray-400">${menuData.subtitle}</p>` : ''}
+                </div>
+            </div>
+        `;
+
+        if (menuPreview) {
+            menuPreview.innerHTML = previewHtml;
+            await window.lucide.createIcons({
+                elements: [menuPreview]
+            });
+        }
+
+        // Update output preview based on mode
+        if (outputPreview) {
+            if (menuData.isAdvancedMode) {
+                // JSON Output
+                const previewJsonData = {
+                    menu: {
+                        optionOne: {
+                            title: menuData.title,
+                            icon: menuData.iconName,
+                            sub: menuData.subtitle,
+                            data: menuData.data
+                        },
+                    }
+                };
+                outputPreview.textContent = JSON.stringify(previewJsonData, null, 2);
+            } else {
+                // Updated VCARD Output with NOTE field
+                const vcardData = `BEGIN:VCARD
+VERSION:3.0
+N;CHARSET=utf-8:${menuData.title || ''};
+ORG:${menuData.subtitle || ''};
+NOTE:${menuData.data || ''};
+PHOTO;ENCODING=b:${menuData.iconName ? 'base64 code will go here...' : ''};
+END:VCARD`;
+                outputPreview.textContent = vcardData;
+            }
+        }
+    }
+
+    // Event Listeners
+    menuTitleInput?.addEventListener('input', async (e) => {
+        menuData.title = (e.target as HTMLInputElement).value;
+        await updatePreview();
+    });
+
+    menuSubtitleInput?.addEventListener('input', async (e) => {
+        menuData.subtitle = (e.target as HTMLInputElement).value;
+        await updatePreview();
+    });
+
+    menuPromptInput?.addEventListener('input', async (e) => {
+        menuData.prompt = (e.target as HTMLInputElement).value;
+        await updatePreview();
+    });
+
+    menuDataInput?.addEventListener('input', async (e) => {
+        menuData.data = (e.target as HTMLInputElement).value;
+        await updatePreview();
+    });
+
+    iconColorInput?.addEventListener('input', async (e) => {
+        menuData.iconColor = (e.target as HTMLInputElement).value;
+        await updatePreview();
+    });
+
+    backgroundColorInput?.addEventListener('input', async (e) => {
+        menuData.backgroundColor = (e.target as HTMLInputElement).value;
+        await updatePreview();
+    });
+
+    bgColorInput?.addEventListener('input', async (e) => {
+        menuData.backgroundColor = (e.target as HTMLInputElement).value;
+        await updatePreview();
+    });
+
+    circularMaskToggle?.addEventListener('change', async (e) => {
+        menuData.isCircular = (e.target as HTMLInputElement).checked;
+        await updatePreview();
+    });
+
+    advancedToggle?.addEventListener('change', async (e) => {
+        menuData.isAdvancedMode = (e.target as HTMLInputElement).checked;
+        const mode = menuData.isAdvancedMode ? 'JSON' : 'VCARD';
+        if (copyButton) {
+            copyButton.textContent = `Copy ${mode}`;
+        }
+        if (downloadButton) {
+            downloadButton.textContent = `Download ${mode}`;
+        }
+        await updatePreview();
+    });
+
+    copyButton?.addEventListener('click', async () => {
+        try {
+            const pngBase64 = await svgToPngBase64(menuData.iconName || 'home');
+            let outputData;
+            
+            if (menuData.isAdvancedMode) {
+                const exportData = {
+                    menu: {
+                        optionOne: {
+                            title: menuData.title,
+                            icon: pngBase64,
+                            sub: menuData.subtitle,
+                            data: menuData.data
+                        },
+                    }
+                };
+                outputData = JSON.stringify(exportData, null, 2);
+            } else {
+                outputData = 
+				`BEGIN:VCARD
+				VERSION:3.0
+				N;CHARSET=utf-8:${menuData.title};
+				ORG:${menuData.subtitle};
+				NOTE:${menuData.data};
+				PHOTO;ENCODING=b:${pngBase64};
+				END:VCARD`;
+            }
+            
+            await navigator.clipboard.writeText(outputData);
+            
+            // Update notification text based on mode
+            if (notification) {
+                notification.textContent = menuData.isAdvancedMode ? 'JSON copied to clipboard!' : 'VCARD copied to clipboard!';
+                notification.classList.remove('translate-y-full', 'opacity-0');
+                setTimeout(() => {
+                    notification.classList.add('translate-y-full', 'opacity-0');
+                }, 3000);
+            }
+        } catch (err) {
+            console.error('Failed to copy:', err);
+            alert('Failed to convert data. Please try again.');
+        }
+    });
+
+    // Update download button to match
+    downloadButton?.addEventListener('click', async () => {
+        try {
+            const pngBase64 = await svgToPngBase64(menuData.iconName || 'home');
+            let outputData;
+            let fileName;
+            let mimeType;
+            
+            if (menuData.isAdvancedMode) {
+                const exportData = {
+                    menu: {
+                        optionOne: {
+                            title: menuData.title,
+                            icon: pngBase64,
+                            sub: menuData.subtitle,
+                            data: menuData.data
+                        },
+                    }
+                };
+                outputData = JSON.stringify(exportData, null, 2);
+                fileName = 'menu-data.json';
+                mimeType = 'application/json';
+            } else {
+                outputData = `BEGIN:VCARD
+VERSION:3.0
+N;CHARSET=utf-8:${menuData.title};
+ORG:${menuData.subtitle};
+NOTE:${menuData.data};
+PHOTO;ENCODING=b:${pngBase64};
+END:VCARD`;
+                fileName = 'menu-data.vcf';
+                mimeType = 'text/vcard';
+            }
+            
+            const blob = new Blob([outputData], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('Failed to download:', err);
+            alert('Failed to convert data. Please try again.');
+        }
+    });
+
+    addIconButton?.addEventListener('click', async () => {
+        const iconName = (iconNameInput as HTMLInputElement)?.value.trim().toLowerCase();
+        if (!iconName) return;
+        
+        try {
+            await waitForLucide(); // Ensure Lucide is ready
+            const isValid = await validateIcon(iconName);
+            
+            if (!isValid) {
+                throw new Error(`Icon "${iconName}" not found`);
+            }
+            
+            menuData.iconName = iconName;
+            await updatePreview();
+            (iconNameInput as HTMLInputElement).value = '';
+        } catch (err) {
+            console.error('Icon validation failed:', err);
+            alert('Icon not found. Please check https://lucide.dev/icons for available icons.');
+        }
+    });
+
+    // Ensure initial button text is correct when page loads
+    if (copyButton) {
+        copyButton.textContent = 'Copy VCARD';
+    }
+
+    // Set initial button states when page loads
+    if (copyButton) {
+        copyButton.textContent = 'Copy VCARD';
+    }
+    if (downloadButton) {
+        downloadButton.textContent = 'Download VCARD';
+    }
+
+    // Update the initial render to wait for Lucide
+    (async () => {
+        await waitForLucide();
+        await updatePreview();
+    })();
+</script>
