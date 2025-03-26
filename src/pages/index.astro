@@ -270,18 +270,53 @@ import Layout from '../layouts/Layout.astro';
 
     // Keep this newer version with the manualCopy helper
     function copyToClipboard(text: string): Promise<boolean> {
-        // Try Clipboard API first
-        if (navigator.clipboard && window.isSecureContext) {
-            return navigator.clipboard.writeText(text)
-                .then(() => true)
-                .catch(() => {
-                    // Fall back to manual method if Clipboard API fails
-                    return manualCopy(text);
-                });
-        }
-        
-        // Use manual copy for unsupported browsers
-        return Promise.resolve(manualCopy(text));
+        return new Promise((resolve) => {
+            // Create input element
+            const input = document.createElement('input');
+            input.setAttribute('readonly', '');
+            input.setAttribute('value', text);
+            input.style.position = 'fixed';
+            input.style.opacity = '0';
+            input.style.zIndex = '-1';
+            
+            // Add to DOM
+            document.body.appendChild(input);
+            
+            // iOS specific handling
+            if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                // Select the content
+                input.contentEditable = 'true';
+                input.readOnly = false;
+                
+                // Select the content
+                const range = document.createRange();
+                range.selectNodeContents(input);
+                const selection = window.getSelection();
+                if (selection) {
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                }
+                input.setSelectionRange(0, 999999);
+                
+                // Make element visible for iOS
+                input.style.opacity = '1';
+                input.style.fontSize = '16px'; // Prevent zoom on iOS
+            } else {
+                input.select();
+            }
+            
+            try {
+                const success = document.execCommand('copy');
+                document.body.removeChild(input);
+                
+                // Short delay to ensure clipboard is updated
+                setTimeout(() => resolve(success), 100);
+            } catch (err) {
+                document.body.removeChild(input);
+                console.error('Copy failed:', err);
+                resolve(false);
+            }
+        });
     }
 
     // Keep the manualCopy helper function as is
