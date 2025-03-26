@@ -202,7 +202,11 @@ import Layout from '../layouts/Layout.astro';
                                         </div>
                                     </label>
                                 </div>
-                                <pre id="output-preview" class="bg-gray-900 text-gray-100 dark:bg-gray-700 dark:text-gray-100 p-4 rounded-md overflow-x-auto text-sm min-h-[300px]"></pre>
+                                <pre id="output-preview" 
+                                     class="bg-gray-900 text-gray-100 dark:bg-gray-700 dark:text-gray-100 
+                                            p-4 rounded-md overflow-x-auto text-sm min-h-[300px] 
+                                            max-w-full whitespace-pre-wrap word-break-all">
+                                </pre>
                             </div>
                         </div>
 
@@ -505,7 +509,7 @@ VERSION:3.0
 N;CHARSET=utf-8:${menuData.title || ''};
 ORG:${menuData.subtitle || ''};
 NOTE:${menuData.data || ''};
-PHOTO;ENCODING=b:${menuData.iconName ? 'base64 code will go here...' : ''};
+PHOTO;ENCODING=b:${menuData.iconName ? '{base64 icon string}' : ''};
 END:VCARD`;
                 outputPreview.textContent = vcardData;
             }
