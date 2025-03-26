@@ -1,48 +1,70 @@
-# Astro Starter Kit: Basics
+# iOS Shortcut Menu Generator
 
-```sh
-npm create astro@latest -- --template basics
-```
+![A short git showing the functionality of Shortcut Menu Creator.](/public/shortcut-menus.gif)
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+A web-based tool for creating custom menus for iOS Shortcuts. Built with Astro and TailwindCSS.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 🚀 Features
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+- Generate custom menu icons with Lucide icons
+- Customize icon and background colors
+- Toggle between circular and square icons
+- Export as VCARD or JSON format
+- Live preview of menu appearance
+- Dark mode support
 
-## 🚀 Project Structure
+## 🛠️ Usage
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+1. Enter your menu details (title, subtitle, data)
+2. Choose an icon from [Lucide Icons](https://lucide.dev/icons)
+3. Customize icon colors and shape
+4. Toggle between VCARD (simple) and JSON (advanced) output
+5. Copy or download the generated code
 
 ## 🧞 Commands
 
 All commands are run from the root of the project, from a terminal:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+| Command           | Action                                      |
+| :--------------- | :------------------------------------------ |
+| `npm install`    | Installs dependencies                       |
+| `npm run dev`    | Starts local dev server at `localhost:4321` |
+| `npm run build`  | Build your production site to `./dist/`     |
+| `npm run preview`| Preview your build locally                  |
 
-## 👀 Want to learn more?
+## 💡 Output Formats
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### VCARD Format
+```text
+BEGIN:VCARD
+VERSION:3.0
+N;CHARSET=utf-8:[title];
+ORG:[subtitle];
+NOTE:[data];
+PHOTO;ENCODING=b:[base64];
+END:VCARD
+```
+
+### JSON Format
+```json
+{
+  "menu": {
+    "optionOne": {
+      "title": "[title]",
+      "icon": "[base64]",
+      "sub": "[subtitle]",
+      "data": "[data]"
+    }
+  }
+}
+```
+
+## 🎨 Technologies Used
+
+- [Astro](https://astro.build)
+- [TailwindCSS](https://tailwindcss.com)
+- [Lucide Icons](https://lucide.dev)
+
+## 📝 License
+
+MIT License - feel free to use this code in your own projects!
