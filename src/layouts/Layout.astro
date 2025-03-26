@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import Footer from "../components/Footer.astro";
 interface Props {
   title?: string;
 }
@@ -18,7 +19,10 @@ const { title = "Shortcut Menu Builder" } = Astro.props;
     <title>{title}</title>
     <script src="https://unpkg.com/lucide@latest"></script>
   </head>
-  <body>
-    <slot />
-  </body>
+	<body class="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+		<main>
+			<slot />
+		</main>
+		<Footer />
+	</body>
 </html>

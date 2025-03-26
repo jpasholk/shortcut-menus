@@ -1,0 +1,29 @@
+---
+// Import icons from components/icons directory
+import GithubLogo from './icons/GitHubLogo.astro';
+import BlueskyLogo from './icons/BlueskyLogo.astro';
+---
+
+<footer class="bg-gray-50 dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-4 pt-2 pb-6">
+    <hr class="mt-4 mb-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:mb-8" />
+    <div class="flex flex-col sm:flex-row items-center justify-between">
+      <div class="flex items-center mb-4 sm:mb-0">
+        <span class="text-sm text-gray-500 dark:text-gray-400">
+          Made with <span class="text-red-700 dark:text-red-500">♥</span> by 
+          <a href="https://jpshlk.com" class="hover:text-indigo-700 dark:hover:text-indigo-400">jpasholk</a>
+        </span>
+      </div>
+      <div class="flex space-x-6">
+        <a href="https://bsky.app/profile/jpshlk.com" class="text-gray-500 hover:text-indigo-700 dark:hover:text-indigo-400">
+          <BlueskyLogo class="w-5 h-5" />
+          <span class="sr-only">Bluesky profile</span>
+        </a>
+        <a href="https://github.com/jpasholk/shortcut-menus" class="text-gray-500 hover:text-indigo-700 dark:hover:text-indigo-400">
+          <GithubLogo class="w-5 h-5" />
+          <span class="sr-only">GitHub repository</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
