@@ -268,55 +268,64 @@ import Layout from '../layouts/Layout.astro';
         });
     }
 
-    // Update the copyToClipboard function to handle Safari's requirements
-    async function copyToClipboard(text: string): Promise<boolean> {
-        // Create a promise that resolves with the text
-        const textPromise: Promise<Blob> = new Promise((resolve) => resolve(new Blob([text], { type: 'text/plain' })));
-
-        try {
-            // Pass the promise directly to ClipboardItem
-            await navigator.clipboard.write([
-                new ClipboardItem({
-                    'text/plain': textPromise
-                })
-            ]);
-            return true;
-        } catch (err) {
-            console.error('Modern clipboard API failed, trying fallback...', err);
-            
-            // Fallback for older browsers
-            try {
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                textArea.style.position = 'fixed';
-                textArea.style.left = '-999999px';
-                textArea.style.top = '-999999px';
-                document.body.appendChild(textArea);
-                
-                if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                    textArea.contentEditable = 'true';
-                    textArea.readOnly = false;
-                    
-                    const range = document.createRange();
-                    range.selectNodeContents(textArea);
-                    const selection = window.getSelection();
-                    if (selection) {
-                        selection.removeAllRanges();
-                        selection.addRange(range);
-                    }
-                    textArea.setSelectionRange(0, 999999);
-                } else {
-                    textArea.select();
-                }
-                
-                const successful = document.execCommand('copy');
-                document.body.removeChild(textArea);
-                return successful;
-            } catch (fallbackErr) {
-                console.error('Fallback copy failed:', fallbackErr);
-                return false;
-            }
+    // Keep this newer version with the manualCopy helper
+    function copyToClipboard(text: string): Promise<boolean> {
+        // Try Clipboard API first
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text)
+                .then(() => true)
+                .catch(() => {
+                    // Fall back to manual method if Clipboard API fails
+                    return manualCopy(text);
+                });
         }
+        
+        // Use manual copy for unsupported browsers
+        return Promise.resolve(manualCopy(text));
+    }
+
+    // Keep the manualCopy helper function as is
+    function manualCopy(text: string): boolean {
+        const textArea = document.createElement('textarea');
+        
+        // Critical settings for iOS
+        textArea.setAttribute('readonly', '');
+        textArea.style.position = 'absolute';
+        textArea.style.left = '-9999px';
+        textArea.style.top = '-9999px';
+        textArea.value = text;
+        
+        document.body.appendChild(textArea);
+        
+        // iOS specific handling
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            textArea.contentEditable = 'true';
+            textArea.readOnly = false;
+            textArea.setSelectionRange(0, text.length);
+        } else {
+            textArea.select();
+        }
+        
+        let success = false;
+        try {
+            success = document.execCommand('copy');
+        } catch (err) {
+            console.error('Manual copy failed:', err);
+        }
+        
+        document.body.removeChild(textArea);
+        return success;
+    }
+
+    // Add these helper functions at the top of your script
+    function createVCard(menuData: any, base64Icon: string): string {
+        return `BEGIN:VCARD
+VERSION:3.0
+N;CHARSET=utf-8:${menuData.title || ''};
+ORG:${menuData.subtitle || ''};
+NOTE:${menuData.data || ''};
+PHOTO;ENCODING=b:${base64Icon};
+END:VCARD`;
     }
 
     // Initialize Lucide icons
@@ -585,7 +594,7 @@ END:VCARD`;
     copyButton?.addEventListener('click', async () => {
         try {
             const pngBase64 = await svgToPngBase64(menuData.iconName || 'home');
-            let outputData;
+            let outputData: string;
             
             if (menuData.isAdvancedMode) {
                 const exportData = {
@@ -600,13 +609,12 @@ END:VCARD`;
                 };
                 outputData = JSON.stringify(exportData, null, 2);
             } else {
-                outputData = `BEGIN:VCARD\nVERSION:3.0\nN;CHARSET=utf-8:${menuData.title};\nORG:${menuData.subtitle};\nNOTE:${menuData.data};\nPHOTO;ENCODING=b:${pngBase64};\nEND:VCARD`;
+                outputData = createVCard(menuData, pngBase64);
             }
 
-            await navigator.clipboard.writeText(outputData);
+            const success = await copyToClipboard(outputData);
             
-            // Show success feedback
-            if (notification) {
+            if (success && notification) {
                 notification.textContent = menuData.isAdvancedMode ? 'JSON copied!' : 'VCARD copied!';
                 notification.classList.remove('translate-y-full', 'opacity-0');
                 
@@ -618,6 +626,8 @@ END:VCARD`;
                     copyButton.classList.remove('bg-green-600', 'dark:bg-green-500');
                     copyButton.classList.add('bg-indigo-600', 'dark:bg-indigo-500');
                 }, 2000);
+            } else {
+                throw new Error('Copy failed');
             }
         } catch (err) {
             console.error('Copy failed:', err);
