@@ -264,6 +264,45 @@ import Layout from '../layouts/Layout.astro';
         });
     }
 
+    // Add this helper function near the top of your script
+    function fallbackCopyToClipboard(text: string): void {
+        // Create temporary textarea
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        
+        // Make it invisible
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        
+        // Save current focus
+        const focused = document.activeElement;
+        
+        // Select and copy
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            if (notification) {
+                notification.textContent = menuData.isAdvancedMode ? 'JSON copied to clipboard!' : 'VCARD copied to clipboard!';
+                notification.classList.remove('translate-y-full', 'opacity-0');
+                setTimeout(() => {
+                    notification.classList.add('translate-y-full', 'opacity-0');
+                }, 3000);
+            }
+        } catch (err) {
+            console.error('Fallback copy failed:', err);
+            alert('Failed to copy to clipboard. Please try again.');
+        }
+        
+        // Cleanup
+        document.body.removeChild(textArea);
+        if (focused && focused instanceof HTMLElement) {
+            focused.focus();
+        }
+    }
+
     // Initialize Lucide icons
     window.lucide.createIcons();
 
@@ -526,6 +565,7 @@ END:VCARD`;
         await updatePreview();
     });
 
+    // Update the copy button click handler
     copyButton?.addEventListener('click', async () => {
         try {
             const pngBase64 = await svgToPngBase64(menuData.iconName || 'home');
@@ -553,15 +593,18 @@ PHOTO;ENCODING=b:${pngBase64};
 END:VCARD`;
             }
             
-            await navigator.clipboard.writeText(outputData);
-            
-            // Update notification text based on mode
-            if (notification) {
-                notification.textContent = menuData.isAdvancedMode ? 'JSON copied to clipboard!' : 'VCARD copied to clipboard!';
-                notification.classList.remove('translate-y-full', 'opacity-0');
-                setTimeout(() => {
-                    notification.classList.add('translate-y-full', 'opacity-0');
-                }, 3000);
+            try {
+                await navigator.clipboard.writeText(outputData);
+                if (notification) {
+                    notification.textContent = menuData.isAdvancedMode ? 'JSON copied to clipboard!' : 'VCARD copied to clipboard!';
+                    notification.classList.remove('translate-y-full', 'opacity-0');
+                    setTimeout(() => {
+                        notification.classList.add('translate-y-full', 'opacity-0');
+                    }, 3000);
+                }
+            } catch (clipboardErr) {
+                console.log('Modern clipboard API failed, trying fallback...');
+                fallbackCopyToClipboard(outputData);
             }
         } catch (err) {
             console.error('Failed to copy:', err);
