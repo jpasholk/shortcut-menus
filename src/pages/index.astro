@@ -625,66 +625,55 @@ END:VCARD`;
     });
 
     // Update the copy button click handler
-    copyButton?.addEventListener('click', () => {
-        // Create a simple textarea immediately
-        const textarea = document.createElement('textarea');
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        
-        // Set the content immediately (without waiting for PNG conversion)
-        if (menuData.isAdvancedMode) {
-            // For JSON, use a placeholder first
-            textarea.value = JSON.stringify({
-                menu: {
-                    optionOne: {
-                        title: menuData.title,
-                        icon: "converting...",
-                        sub: menuData.subtitle,
-                        data: menuData.data
-                    }
-                }
-            }, null, 2);
-        } else {
-            // For VCARD, use a placeholder first
-            textarea.value = `BEGIN:VCARD\nVERSION:3.0\nN;CHARSET=utf-8:${menuData.title};\nORG:${menuData.subtitle};\nNOTE:${menuData.data};\nPHOTO;ENCODING=b:converting...;\nEND:VCARD`;
-        }
-        
-        // Immediately try to copy in the click handler
-        document.body.appendChild(textarea);
-        textarea.select();
-        
+    copyButton?.addEventListener('click', async () => {
         try {
-            document.execCommand('copy');
-            notification.textContent = "Content copied! Converting icon...";
-            notification.classList.remove('translate-y-full', 'opacity-0');
+            // Get the real data first before attempting to copy
+            const pngBase64 = await svgToPngBase64(menuData.iconName || 'home');
+            const textarea = document.createElement('textarea');
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
             
-            // Now do the PNG conversion and try to copy again
-            svgToPngBase64(menuData.iconName || 'home').then(pngBase64 => {
-                // Update with real data
-                if (menuData.isAdvancedMode) {
-                    textarea.value = JSON.stringify({
-                        menu: {
-                            optionOne: {
-                                title: menuData.title,
-                                icon: pngBase64,
-                                sub: menuData.subtitle,
-                                data: menuData.data
-                            }
+            // Set the actual content with real base64 data
+            if (menuData.isAdvancedMode) {
+                textarea.value = JSON.stringify({
+                    menu: {
+                        optionOne: {
+                            title: menuData.title,
+                            icon: pngBase64,
+                            sub: menuData.subtitle,
+                            data: menuData.data
                         }
-                    }, null, 2);
-                } else {
-                    textarea.value = `BEGIN:VCARD\nVERSION:3.0\nN;CHARSET=utf-8:${menuData.title};\nORG:${menuData.subtitle};\nNOTE:${menuData.data};\nPHOTO;ENCODING=b:${pngBase64};\nEND:VCARD`;
+                    }
+                }, null, 2);
+            } else {
+                textarea.value = `BEGIN:VCARD\nVERSION:3.0\nN;CHARSET=utf-8:${menuData.title};\nORG:${menuData.subtitle};\nNOTE:${menuData.data};\nPHOTO;ENCODING=b:${pngBase64};\nEND:VCARD`;
+            }
+            
+            // Single copy attempt with complete data
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            const success = document.execCommand('copy');
+            if (success) {
+                if (notification) {
+                    notification.textContent = menuData.isAdvancedMode ? 'JSON copied!' : 'VCARD copied!';
+                    notification.classList.remove('translate-y-full', 'opacity-0');
                 }
-                
-                textarea.select();
-                document.execCommand('copy');
-                notification.textContent = menuData.isAdvancedMode ? 'JSON copied!' : 'VCARD copied!';
-            });
+            } else {
+                throw new Error('Copy failed');
+            }
         } catch (err) {
             console.error('Copy failed:', err);
-            notification.textContent = 'Could not copy. Please try again.';
+            if (notification) {
+                notification.textContent = 'Could not copy. Please try again.';
+                notification.classList.remove('translate-y-full', 'opacity-0');
+            }
         } finally {
-            document.body.removeChild(textarea);
+            setTimeout(() => {
+                if (notification) {
+                    notification.classList.add('translate-y-full', 'opacity-0');
+                }
+            }, 3000);
         }
     });
 
