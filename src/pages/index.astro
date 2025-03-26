@@ -544,14 +544,13 @@ END:VCARD`;
                 };
                 outputData = JSON.stringify(exportData, null, 2);
             } else {
-                outputData = 
-				`BEGIN:VCARD
-				VERSION:3.0
-				N;CHARSET=utf-8:${menuData.title};
-				ORG:${menuData.subtitle};
-				NOTE:${menuData.data};
-				PHOTO;ENCODING=b:${pngBase64};
-				END:VCARD`;
+                outputData = `BEGIN:VCARD
+VERSION:3.0
+N;CHARSET=utf-8:${menuData.title};
+ORG:${menuData.subtitle};
+NOTE:${menuData.data};
+PHOTO;ENCODING=b:${pngBase64};
+END:VCARD`;
             }
             
             await navigator.clipboard.writeText(outputData);
