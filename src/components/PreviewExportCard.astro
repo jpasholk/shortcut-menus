@@ -1,0 +1,93 @@
+---
+import Card from './Card.astro';
+---
+
+<Card title="Preview & Export" headerRight={true}>
+  <div slot="header-right">
+    <!-- Circular Toggle -->
+    <label class="flex items-center space-x-3 cursor-pointer">
+      <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+        Circular
+      </span>
+      <div class="relative">
+        <input 
+          type="checkbox" 
+          id="circular-mask" 
+          class="sr-only peer"
+          checked
+        >
+        <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer 
+                  peer-checked:after:translate-x-full after:content-[''] 
+                  after:absolute after:top-0.5 after:left-[2px] after:bg-white 
+                  after:rounded-full after:h-5 after:w-5 after:transition-all 
+                  peer-checked:bg-indigo-600">
+        </div>
+      </div>
+    </label>
+  </div>
+
+  <div class="flex-1">
+    <div id="menu-preview" class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 flex items-center justify-center bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <i data-lucide="home" class="w-6 h-6 text-gray-900 dark:text-white"></i>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-medium text-gray-900 dark:text-white"></h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- JSON Output -->
+    <div class="mt-6">
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="text-lg font-medium text-gray-800 dark:text-white">Output</h3>
+        
+        <!-- Advanced Toggle -->
+        <label class="flex items-center space-x-3 cursor-pointer">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+            Advanced
+          </span>
+          <div class="relative">
+            <input 
+              type="checkbox" 
+              id="advanced-toggle" 
+              class="sr-only peer"
+            >
+            <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer 
+                      peer-checked:after:translate-x-full after:content-[''] 
+                      after:absolute after:top-0.5 after:left-[2px] after:bg-white 
+                      after:rounded-full after:h-5 after:w-5 after:transition-all 
+                      peer-checked:bg-indigo-600">
+            </div>
+          </div>
+        </label>
+      </div>
+      <pre id="output-preview" 
+           class="bg-gray-900 text-gray-100 dark:bg-gray-700 dark:text-gray-100 
+                 p-4 rounded-md overflow-x-auto text-sm min-h-[300px] 
+                 max-w-full whitespace-pre-wrap word-break-all">
+      </pre>
+    </div>
+  </div>
+
+  <!-- Export Actions -->
+  <div class="flex gap-4 mt-4">
+    <button 
+      id="copyButton"
+      class="flex-1 bg-indigo-600 text-white dark:bg-indigo-500 
+            hover:bg-indigo-700 dark:hover:bg-indigo-600 
+            focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors rounded-md"
+    >
+      Copy JSON
+    </button>
+    <button 
+      id="downloadButton"
+      class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-200 
+            hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 
+            focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors"
+    >
+      Download JSON
+    </button>
+  </div>
+</Card>

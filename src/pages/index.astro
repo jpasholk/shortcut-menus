@@ -1,250 +1,33 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import CreateMenuCard from '../components/CreateMenuCard.astro';
+import PreviewExportCard from '../components/PreviewExportCard.astro';
 ---
 
 <Layout>
-    <div class="bg-gray-50 dark:bg-gray-900 pt-8 pb-0">
-        <div class="max-w-7xl mx-auto px-4">
-            <header class="text-center mb-8">
-                <h1 class="text-3xl md:text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">Shortcut Menus (Beta 3)</h1>
-                <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300">iOS Shortcut Menu Generator</p>
-            </header>
+  <div class="bg-gray-50 dark:bg-gray-900 pt-8 pb-0">
+    <div class="max-w-7xl mx-auto px-4">
+        <Header 
+        title="Shortcut Menus (Beta 3)" 
+        subtitle="iOS Shortcut Menu Generator" 
+        />
 
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Form Section -->
-                <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex flex-col min-h-[600px]">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Create Your Menu</h2>
-                    </div>
-                    
-                    <!-- Rest of the form content -->
-                    <div class="flex-1 flex flex-col space-y-8">
-                        <!-- Menu Content Form -->
-                        <form id="menuForm" class="space-y-6">
-                            <!-- Title Input -->
-                            <div class="form-group">
-                                <label for="menu-title" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                                    Option Title
-                                </label>
-                                <input 
-                                    type="text" 
-                                    id="menu-title" 
-                                    name="menu-title"
-                                    placeholder="Enter menu option title..."
-                                    class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
-                                           text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 
-                                           focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 
-                                           dark:focus:border-indigo-400"
-                                >
-                            </div>
-
-                            <!-- Subtitle Input -->
-                            <div class="form-group">
-                                <label for="menu-subtitle" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                                    Option Subtitle
-                                </label>
-                                <input 
-                                    type="text" 
-                                    id="menu-subtitle" 
-                                    name="menu-subtitle"
-                                    placeholder="Enter menu option subtitle..." 
-                                    class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
-                                           text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 
-                                           focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 
-                                           dark:focus:border-indigo-400"
-                                >
-                            </div>
-
-                            <!-- Data Input -->
-                            <div class="form-group">
-                                <label for="menu-data" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                                    Menu Data
-                                </label>
-                                <input 
-                                    type="text" 
-                                    id="menu-data" 
-                                    name="menu-data"
-                                    placeholder="Enter menu option data..." 
-                                    class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
-                                           text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 
-                                           focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 
-                                           dark:focus:border-indigo-400"
-                                >
-                            </div>
-                        </form>
-
-                        <!-- Icon Section -->
-                        <div class="space-y-6">
-                            <!-- Icon Input -->
-                            <div class="form-group">
-                                <label for="icon-name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-                                    Enter Lucide Icon Name
-                                </label>
-                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                                    Find icons at <a href="https://lucide.dev/icons" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300">lucide.dev/icons</a>
-                                </p>
-                                <div class="flex gap-4 w-full">
-                                    <input 
-                                        type="text" 
-                                        id="icon-name" 
-                                        name="icon-name"
-                                        placeholder="Try 'layers-2' or 'smartphone'..." 
-                                        class="flex-1 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
-                                               text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 
-                                               focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 
-                                               dark:focus:border-indigo-400"
-                                    >
-                                    <button 
-                                        type="button"
-                                        id="add-icon"
-                                        class="px-4 py-2 bg-indigo-600 text-white dark:bg-indigo-500 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 
-                                               focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors"
-                                    >
-                                        Try Icon
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Color Inputs -->
-                            <div class="form-group">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-4">
-                                    Icon Colors
-                                </label>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label class="block text-sm text-gray-500 dark:text-gray-400 mb-2">
-                                            Icon Color
-                                        </label>
-                                        <input 
-                                            type="color" 
-                                            id="icon-color" 
-                                            value="#000000"
-                                            class="p-1 w-full h-10 rounded-md cursor-pointer border border-gray-300 dark:border-gray-600"
-                                        >
-                                    </div>
-                                    <div>
-                                        <label class="block text-sm text-gray-500 dark:text-gray-400 mb-2">
-                                            Background
-                                        </label>
-                                        <input 
-                                            type="color" 
-                                            id="bg-color" 
-                                            value="#ffffff"
-                                            class="p-1 w-full h-10 rounded-md cursor-pointer border border-gray-300 dark:border-gray-600"
-                                        >
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Preview Section -->
-                <section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex flex-col min-h-[600px]">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Preview & Export</h2>
-                        
-                        <!-- Circular Toggle -->
-                        <label class="flex items-center space-x-3 cursor-pointer">
-                            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
-                                Circular
-                            </span>
-                            <div class="relative">
-                                <input 
-                                    type="checkbox" 
-                                    id="circular-mask" 
-                                    class="sr-only peer"
-                                    checked
-                                >
-                                <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer 
-                                            peer-checked:after:translate-x-full after:content-[''] 
-                                            after:absolute after:top-0.5 after:left-[2px] after:bg-white 
-                                            after:rounded-full after:h-5 after:w-5 after:transition-all 
-                                            peer-checked:bg-indigo-600">
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                    
-                    <div class="flex-1 flex flex-col">
-                        <div class="flex-1">
-                            <div id="menu-preview" class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 flex items-center justify-center bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                        <i data-lucide="home" class="w-6 h-6 text-gray-900 dark:text-white"></i>
-                                    </div>
-                                    <div class="flex-1">
-                                        <h3 class="font-medium text-gray-900 dark:text-white"></h3>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- JSON Output -->
-                            <div class="mt-6">
-                                <div class="flex justify-between items-center mb-2">
-                                    <h3 class="text-lg font-medium text-gray-800 dark:text-white">Output</h3>
-                                    
-                                    <!-- Advanced Toggle -->
-                                    <label class="flex items-center space-x-3 cursor-pointer">
-                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
-                                            Advanced
-                                        </span>
-                                        <div class="relative">
-                                            <input 
-                                                type="checkbox" 
-                                                id="advanced-toggle" 
-                                                class="sr-only peer"
-                                            >
-                                            <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer 
-                                                        peer-checked:after:translate-x-full after:content-[''] 
-                                                        after:absolute after:top-0.5 after:left-[2px] after:bg-white 
-                                                        after:rounded-full after:h-5 after:w-5 after:transition-all 
-                                                        peer-checked:bg-indigo-600">
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div>
-                                <pre id="output-preview" 
-                                     class="bg-gray-900 text-gray-100 dark:bg-gray-700 dark:text-gray-100 
-                                            p-4 rounded-md overflow-x-auto text-sm min-h-[300px] 
-                                            max-w-full whitespace-pre-wrap word-break-all">
-                                </pre>
-                            </div>
-                        </div>
-
-                        <!-- Export Actions -->
-                        <div class="flex gap-4">
-                            <button 
-                                id="copyButton"
-                                class="flex-1 bg-indigo-600 text-white dark:bg-indigo-500 
-                                       hover:bg-indigo-700 dark:hover:bg-indigo-600 
-                                       focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors rounded-md"
-                            >
-                                Copy JSON
-                            </button>
-                            <button 
-                                id="downloadButton"
-                                class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-200 
-                                       hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 
-                                       focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors"
-                            >
-                                Download JSON
-                            </button>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </div>
+      <div class="grid md:grid-cols-2 gap-8">
+        <CreateMenuCard />
+        <PreviewExportCard />
+      </div>
     </div>
+  </div>
 
-    <!-- Notification -->
-    <div 
-        id="notification" 
-        class="fixed bottom-4 right-4 bg-green-500 dark:bg-green-600 text-white px-4 py-2 rounded-md shadow-lg 
-               transform translate-y-full opacity-0 transition-all duration-300"
-    >
-        JSON copied to clipboard!
-    </div>
+  <!-- Notification -->
+  <div 
+    id="notification" 
+    class="fixed bottom-4 right-4 bg-green-500 dark:bg-green-600 text-white px-4 py-2 rounded-md shadow-lg 
+           transform translate-y-full opacity-0 transition-all duration-300"
+  >
+    JSON copied to clipboard!
+  </div>
 </Layout>
 
 <script src="../utils/menuGenerator.ts"></script>

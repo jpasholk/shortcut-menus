@@ -1,0 +1,24 @@
+---
+interface Props {
+  title: string;
+  headerRight?: boolean; // Optional slot for header right content
+}
+
+const { title, headerRight = false } = Astro.props;
+---
+
+<section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex flex-col min-h-[600px]">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">{title}</h2>
+    
+    {headerRight && (
+      <div class="header-right">
+        <slot name="header-right" />
+      </div>
+    )}
+  </div>
+  
+  <div class="flex-1 flex flex-col">
+    <slot />
+  </div>
+</section>
