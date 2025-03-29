@@ -4,26 +4,15 @@ import Card from './Card.astro';
 
 <Card title="Preview & Export" headerRight={true}>
   <div slot="header-right">
-    <!-- Circular Toggle -->
-    <label class="flex items-center space-x-3 cursor-pointer">
-      <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
-        Circular
-      </span>
-      <div class="relative">
-        <input 
-          type="checkbox" 
-          id="circular-mask" 
-          class="sr-only peer"
-          checked
-        >
-        <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer 
-                  peer-checked:after:translate-x-full after:content-[''] 
-                  after:absolute after:top-0.5 after:left-[2px] after:bg-white 
-                  after:rounded-full after:h-5 after:w-5 after:transition-all 
-                  peer-checked:bg-indigo-600">
-        </div>
-      </div>
-    </label>
+    <!-- Reset button -->
+    <button
+      id="reset-button"
+      class="inline-flex items-center rounded-full bg-gray-200 dark:bg-gray-700 p-2 text-gray-600 dark:text-gray-300 shadow-sm hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+      aria-label="Reset all menu items"
+      title="Reset all menu items"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+    </button>
   </div>
 
   <div class="flex-1">

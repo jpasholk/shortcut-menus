@@ -1,9 +1,19 @@
 ---
-// filepath: /Users/josh_work/Documents/GitHub/shortcut-menus/src/components/CreateMenuCard.astro
 import Card from './Card.astro';
 ---
 
-<Card title="Create Your Menu">
+<Card title="Create Your Menu" headerRight={true}>
+  <div slot="header-right">
+    <button
+      id="add-menu-item"
+      class="inline-flex items-center rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      aria-label="Add menu item"
+      title="Add menu item"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    </button>
+  </div>
+
   <div class="flex-1 flex flex-col space-y-8">
     <!-- Menu Content Form -->
     <form id="menuForm" class="space-y-6">
@@ -63,9 +73,33 @@ import Card from './Card.astro';
     <div class="space-y-6">
       <!-- Icon Input -->
       <div class="form-group">
-        <label for="icon-name" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-          Enter Lucide Icon Name
-        </label>
+        <div class="flex justify-between items-center mb-2">
+          <label for="icon-name" class="block text-sm font-medium text-gray-700 dark:text-gray-200">
+            Enter Lucide Icon Name
+          </label>
+          
+          <!-- Circular Toggle - moved here from PreviewExportCard -->
+          <label class="flex items-center space-x-3 cursor-pointer">
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+              Circular
+            </span>
+            <div class="relative">
+              <input 
+                type="checkbox" 
+                id="circular-mask" 
+                class="sr-only peer"
+                checked
+              >
+              <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer 
+                        peer-checked:after:translate-x-full after:content-[''] 
+                        after:absolute after:top-0.5 after:left-[2px] after:bg-white 
+                        after:rounded-full after:h-5 after:w-5 after:transition-all 
+                        peer-checked:bg-indigo-600">
+              </div>
+            </div>
+          </label>
+        </div>
+        
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
           Find icons at <a href="https://lucide.dev/icons" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300">lucide.dev/icons</a>
         </p>
