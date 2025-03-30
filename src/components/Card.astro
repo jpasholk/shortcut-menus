@@ -2,12 +2,13 @@
 interface Props {
   title: string;
   headerRight?: boolean;
+  class?: string;
 }
 
-const { title, headerRight = false } = Astro.props;
+const { title, headerRight = false, class: className = "" } = Astro.props;
 ---
 
-<section class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex flex-col">
+<section class={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex flex-col ${className}`}>
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-2xl font-bold text-gray-800 dark:text-white">{title}</h2>
     

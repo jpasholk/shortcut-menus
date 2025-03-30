@@ -4,14 +4,14 @@ import Card from './Card.astro';
 
 <Card title="Preview & Export" headerRight={true}>
   <div slot="header-right">
-    <!-- Reset button -->
+    <!-- Add button -->
     <button
-      id="reset-button"
-      class="inline-flex items-center rounded-full bg-gray-200 dark:bg-gray-700 p-2 text-gray-600 dark:text-gray-300 shadow-sm hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-      aria-label="Reset all menu items"
-      title="Reset all menu items"
+      id="add-menu-item"
+      class="inline-flex items-center rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      aria-label="Add menu item"
+      title="Add menu item"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
     </button>
   </div>
 
@@ -54,7 +54,7 @@ import Card from './Card.astro';
       </div>
       <pre id="output-preview" 
            class="bg-gray-900 text-gray-100 dark:bg-gray-700 dark:text-gray-100 
-                 p-4 rounded-md overflow-x-auto text-sm min-h-[300px] 
+                 p-4 rounded-md overflow-x-auto text-sm min-h-[316px] 
                  max-w-full whitespace-pre-wrap word-break-all">
       </pre>
     </div>
