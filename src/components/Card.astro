@@ -8,9 +8,9 @@ interface Props {
 const { title, headerRight = false, class: className = "" } = Astro.props;
 ---
 
-<section class={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 sm:p-6 flex flex-col ${className}`}>
+<section class={`bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 flex flex-col h-full ${className}`}>
   <div class="flex justify-between items-center mb-4 sm:mb-6">
-    <h2 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">{title}</h2>
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-white">{title}</h2>
     
     {headerRight && (
       <div class="header-right">

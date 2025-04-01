@@ -7,16 +7,23 @@ import PreviewExportCard from '../components/PreviewExportCard.astro';
 
 <Layout>
   <div class="bg-gray-50 dark:bg-gray-900 pt-8 pb-4">
-    <div class="max-w-7xl mx-auto px-3 sm:px-4"> <!-- Adjusted padding -->
+    <div class="max-w-7xl mx-auto px-3 sm:px-4">
       <Header 
         title="Shortcut Menus (Beta 4)" 
         subtitle="iOS Shortcut Menu Generator" 
       />
 
-      <!-- Use align-items-start to prevent cards from stretching -->
-      <div class="grid md:grid-cols-2 gap-6 sm:gap-8 items-start"> <!-- Reduced gap on mobile -->
-        <CreateMenuCard />
-        <PreviewExportCard />
+      <!-- Use grid with equal-height columns -->
+      <div class="grid md:grid-cols-2 gap-6 sm:gap-8 grid-rows-1">
+        <div class="flex flex-col h-full"> <!-- Full height container -->
+          <!-- Create Menu Card -->
+          <CreateMenuCard />
+        </div>
+        
+        <div class="flex flex-col h-full"> <!-- Full height container -->
+          <!-- Preview Export Card -->
+          <PreviewExportCard />
+        </div>
       </div>
     </div>
   </div>
@@ -37,5 +44,51 @@ import PreviewExportCard from '../components/PreviewExportCard.astro';
   
   // Call it immediately to set up the UI
   initShortcutMenu();
+  
+  // Easter egg logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const addMenuItemButton = document.getElementById('add-menu-item');
+    let menuItemCount = 0;
+    
+    addMenuItemButton?.addEventListener('click', () => {
+      menuItemCount++;
+      
+      // After reaching 5 items, gradually reveal Rick Astley
+      if (menuItemCount >= 3) {
+        const rickRoll = document.createElement('div');
+        rickRoll.id = 'rick-roll';
+        rickRoll.innerHTML = `
+          <div class="mt-4 p-2 flex flex-col items-center rounded-lg opacity-80">
+            <p class="text-s text-gray-500 mb-2">Never gonna give you up...</p>
+            <img 
+              src="https://media.giphy.com/media/Ju7l5y9osyymQ/giphy.gif" 
+              alt="Never gonna give you up" 
+              class="w-full max-w-xs rounded-md shadow-md"
+              loading="lazy"
+            />
+            <p class="text-s text-gray-500 mt-2">Happy April Fools Day!</p>
+          </div>
+        `;
+        
+        // Remove any existing easter egg first
+        const oldEgg = document.getElementById('rick-roll');
+        if (oldEgg) oldEgg.remove();
+        
+        // Add to the bottom of the Create Menu card
+        const createMenuCard = document.querySelector('.grid > div:first-child > section');
+        if (createMenuCard) {
+          createMenuCard.appendChild(rickRoll);
+        }
+      }
+    });
+    
+    // Reset button handler
+    const resetButton = document.getElementById('reset-button');
+    resetButton?.addEventListener('click', () => {
+      menuItemCount = 0;
+      const rickRoll = document.getElementById('rick-roll');
+      if (rickRoll) rickRoll.remove();
+    });
+  });
 </script>
 
