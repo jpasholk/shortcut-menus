@@ -16,6 +16,7 @@ import { validateIcon, waitForLucide } from './icons';
 import { updatePreview, updateUI } from './ui';
 import { copyToClipboard } from './clipboard';
 import { downloadData } from './download';
+import { processImage } from './images';
 
 /**
  * Initialize the application and set up event listeners
@@ -36,6 +37,7 @@ export function initShortcutMenu(): void {
     const advancedToggle = document.getElementById('advanced-toggle') as HTMLInputElement;
     const addMenuItemButton = document.getElementById('add-menu-item');
     const resetButton = document.getElementById('reset-button');
+    const imageUploadInput = document.getElementById('image-upload') as HTMLInputElement;
 
     // Event listeners for form inputs
     menuTitleInput?.addEventListener('input', async (e) => {
@@ -121,6 +123,58 @@ export function initShortcutMenu(): void {
             syncFormToActiveItem();
             await updateUI();
         }
+    });
+
+    // Image upload handler
+    imageUploadInput?.addEventListener('change', function(e) {
+        const file = this.files?.[0];
+        if (!file) return;
+
+        // Validate file is an image
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file');
+            return;
+        }
+
+        // Show loading state
+        const menuPreview = document.getElementById('menu-preview');
+        if (menuPreview) {
+            const activeIconElement = menuPreview.querySelector('.w-10.h-10');
+            if (activeIconElement) {
+                activeIconElement.innerHTML = '<div class="animate-pulse w-6 h-6 bg-gray-300 dark:bg-gray-600 rounded"></div>';
+            }
+        }
+
+        // Read file as data URL
+        const reader = new FileReader();
+        reader.onload = async function(event) {
+            try {
+                const imageDataUrl = event.target?.result as string;
+                
+                // Process image to ensure consistent format
+                const processedImageData = await processImage(imageDataUrl);
+                
+                // Update state with processed image
+                updateActiveItem('customImageData', processedImageData);
+                updateActiveItem('iconName', ''); // Clear icon name when using custom image
+                
+                // Update UI
+                await updatePreview();
+            } catch (err) {
+                console.error('Image processing failed:', err);
+                alert('Failed to process image. Please try another one.');
+            }
+        };
+        
+        reader.onerror = function() {
+            console.error('FileReader error');
+            alert('Failed to read the image file');
+        };
+        
+        reader.readAsDataURL(file);
+        
+        // Reset file input for future uploads
+        this.value = '';
     });
 
     // Set initial button states

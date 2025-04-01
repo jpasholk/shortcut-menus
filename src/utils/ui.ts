@@ -20,8 +20,18 @@ export async function updatePreview(): Promise<void> {
     // Generate HTML for each menu item
     for (let i = 0; i < state.menuItems.length; i++) {
         const item = state.menuItems[i];
-        const iconToUse = item.iconName || 'home';
         const isActive = i === state.activeItemIndex;
+        
+        // Determine what to show in the icon area
+        let iconHtml = '';
+        if (item.customImageData) {
+            // Use custom image if available
+            iconHtml = `<img src="${item.customImageData}" class="w-6 h-6 object-contain" alt="Custom icon">`;
+        } else {
+            // Otherwise use Lucide icon
+            const iconToUse = item.iconName || 'home';
+            iconHtml = `<i data-lucide="${iconToUse}" class="w-6 h-6" style="color: ${item.iconColor}"></i>`;
+        }
         
         // Enhance the highlight for active item
         previewHtml += `
@@ -29,8 +39,7 @@ export async function updatePreview(): Promise<void> {
                 <div class="flex items-center gap-4 px-3">
                     <div class="w-10 h-10 flex items-center justify-center ${state.isCircular ? 'rounded-full' : 'rounded-lg'}"
                          style="background-color: ${item.backgroundColor}">
-                        <i data-lucide="${iconToUse}" class="w-6 h-6"
-                           style="color: ${item.iconColor}"></i>
+                        ${iconHtml}
                     </div>
                     <div class="flex-1">
                         <h3 class="font-medium text-gray-900 dark:text-white">${item.title || 'Untitled Option'}</h3>
