@@ -43,10 +43,10 @@ export async function getPreviewText(): Promise<string> {
             
             vCardOutput += `BEGIN:VCARD
 VERSION:3.0
-N;CHARSET=utf-8:${item.title || ''};
-ORG:${item.subtitle || ''};
-NOTE:${item.data || ''};
-PHOTO;ENCODING=b:${iconPlaceholder};
+N:${item.title || ''}
+ORG:${item.subtitle || ''}
+NOTE:${item.data || ''}
+PHOTO;BASE64:${iconPlaceholder}
 END:VCARD
 
 `;

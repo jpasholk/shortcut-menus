@@ -53,12 +53,14 @@ import PreviewExportCard from '../components/PreviewExportCard.astro';
     addMenuItemButton?.addEventListener('click', () => {
       menuItemCount++;
       
-      // After reaching 5 items, gradually reveal Rick Astley
-      if (menuItemCount >= 3) {
+      // After reaching target number of menu items, reveal Rick Astley
+      if (menuItemCount >= 2) {
         const rickRoll = document.createElement('div');
         rickRoll.id = 'rick-roll';
+        rickRoll.style.opacity = '0'; // Start with opacity 0
+        rickRoll.style.transition = 'opacity 1.6s ease-in';
         rickRoll.innerHTML = `
-          <div class="mt-4 p-2 flex flex-col items-center rounded-lg opacity-80">
+          <div class="mt-4 p-2 flex flex-col items-center rounded-lg">
             <p class="text-s text-gray-500 mb-2">Never gonna give you up...</p>
             <img 
               src="https://media.giphy.com/media/Ju7l5y9osyymQ/giphy.gif" 
@@ -78,6 +80,11 @@ import PreviewExportCard from '../components/PreviewExportCard.astro';
         const createMenuCard = document.querySelector('.grid > div:first-child > section');
         if (createMenuCard) {
           createMenuCard.appendChild(rickRoll);
+          
+          // Trigger fade-in after a short delay
+          setTimeout(() => {
+            rickRoll.style.opacity = '0.85'; // Fixed opacity
+          }, 50);
         }
       }
     });
@@ -87,7 +94,15 @@ import PreviewExportCard from '../components/PreviewExportCard.astro';
     resetButton?.addEventListener('click', () => {
       menuItemCount = 0;
       const rickRoll = document.getElementById('rick-roll');
-      if (rickRoll) rickRoll.remove();
+      
+      if (rickRoll) {
+        // Fade out before removing
+        rickRoll.style.opacity = '0';
+        
+        setTimeout(() => {
+          rickRoll.remove();
+        }, 500); // Remove after fade-out completes
+      }
     });
   });
 </script>

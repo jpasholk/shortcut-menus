@@ -74,13 +74,13 @@ export function copyToClipboard(notification?: HTMLElement): void {
                     
                     vCardOutput += `BEGIN:VCARD
 VERSION:3.0
-N;CHARSET=utf-8:${item.title};
-ORG:${item.subtitle};
-NOTE:${item.data};
-PHOTO;ENCODING=b:${iconData};
+N:${item.title}
+ORG:${item.subtitle}
+NOTE:${item.data}
+PHOTO;BASE64:${iconData}
 END:VCARD
 
-`; // Note the extra newline here
+`;
                 }
                 
                 outputData = vCardOutput.trim();
