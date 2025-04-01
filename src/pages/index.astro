@@ -7,14 +7,14 @@ import PreviewExportCard from '../components/PreviewExportCard.astro';
 
 <Layout>
   <div class="bg-gray-50 dark:bg-gray-900 pt-8 pb-4">
-    <div class="max-w-7xl mx-auto px-4">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4"> <!-- Adjusted padding -->
       <Header 
         title="Shortcut Menus (Beta 4)" 
         subtitle="iOS Shortcut Menu Generator" 
       />
 
       <!-- Use align-items-start to prevent cards from stretching -->
-      <div class="grid md:grid-cols-2 gap-8 items-start">
+      <div class="grid md:grid-cols-2 gap-6 sm:gap-8 items-start"> <!-- Reduced gap on mobile -->
         <CreateMenuCard />
         <PreviewExportCard />
       </div>
@@ -31,7 +31,6 @@ import PreviewExportCard from '../components/PreviewExportCard.astro';
   </div>
 </Layout>
 
-<!-- <script src="../utils/menuGenerator-v1.ts"></script> -->
 <script>
   // Import directly from the utils folder
   import { initShortcutMenu } from '../utils';

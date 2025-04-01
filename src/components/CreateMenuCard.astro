@@ -103,33 +103,35 @@ import Card from './Card.astro';
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
           Find icons at <a href="https://lucide.dev/icons" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300">lucide.dev/icons</a>
         </p>
-        <div class="flex gap-2 w-full">
+        <div class="grid grid-cols-1 lg:flex lg:gap-2 w-full space-y-2 lg:space-y-0">
           <input 
             type="text" 
             id="icon-name" 
             name="icon-name"
             placeholder="Try 'layers-2' or 'smartphone'..." 
-            class="flex-1 px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
+            class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
                   text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 
                   focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 
                   dark:focus:border-indigo-400"
           >
-          <button 
-            type="button"
-            id="add-icon"
-            class="px-4 py-2 whitespace-nowrap bg-indigo-600 text-white dark:bg-indigo-500 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 
-                  focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors"
-          >
-            Try Icon
-          </button>
-          <label 
-            for="image-upload"
-            class="px-4 py-2 whitespace-nowrap border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-200 
-                  hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 
-                  focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors cursor-pointer"
-          >
-            Upload Image
-          </label>
+          <div class="flex w-full gap-2">
+            <button 
+              type="button"
+              id="add-icon"
+              class="flex-1 px-4 py-2 whitespace-nowrap bg-indigo-600 text-white dark:bg-indigo-500 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors"
+            >
+              Try Icon
+            </button>
+            <label 
+              for="image-upload"
+              class="flex-1 px-4 py-2 whitespace-nowrap text-center border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-200 
+                    hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 
+                    focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors cursor-pointer"
+            >
+              Upload
+            </label>
+          </div>
           <input 
             type="file" 
             id="image-upload" 
