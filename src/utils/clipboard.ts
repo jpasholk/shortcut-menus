@@ -25,11 +25,26 @@ export function copyToClipboard(notification?: HTMLElement): void {
                 
                 for (let i = 0; i < state.menuItems.length; i++) {
                     const item = state.menuItems[i];
-                    const pngBase64 = await svgToPngBase64(item.iconName || 'home');
+                    
+                    // Handle custom image or Lucide icon with error fallback
+                    let iconData;
+                    try {
+                        if (item.customImageData) {
+                            // Extract base64 part from custom image data
+                            iconData = item.customImageData.replace(/^data:image\/[a-z]+;base64,/, '');
+                        } else {
+                            // Generate from icon name
+                            iconData = await svgToPngBase64(item.iconName || 'home');
+                        }
+                    } catch (err) {
+                        console.warn("Icon conversion failed, using fallback:", err);
+                        // Transparent pixel fallback
+                        iconData = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+                    }
                     
                     output.menu[`option${i+1}`] = {
                         title: item.title,
-                        icon: pngBase64,
+                        icon: iconData,
                         sub: item.subtitle,
                         data: item.data
                     };
@@ -41,14 +56,28 @@ export function copyToClipboard(notification?: HTMLElement): void {
                 let vCardOutput = '';
                 
                 for (const item of state.menuItems) {
-                    const pngBase64 = await svgToPngBase64(item.iconName || 'home');
+                    // Handle custom image or Lucide icon with error fallback
+                    let iconData;
+                    try {
+                        if (item.customImageData) {
+                            // Extract base64 part from custom image data
+                            iconData = item.customImageData.replace(/^data:image\/[a-z]+;base64,/, '');
+                        } else {
+                            // Generate from icon name
+                            iconData = await svgToPngBase64(item.iconName || 'home');
+                        }
+                    } catch (err) {
+                        console.warn("Icon conversion failed, using fallback:", err);
+                        // Transparent pixel fallback
+                        iconData = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+                    }
                     
                     vCardOutput += `BEGIN:VCARD
 VERSION:3.0
 N;CHARSET=utf-8:${item.title};
 ORG:${item.subtitle};
 NOTE:${item.data};
-PHOTO;ENCODING=b:${pngBase64};
+PHOTO;ENCODING=b:${iconData};
 END:VCARD
 `;
                 }
@@ -60,7 +89,10 @@ END:VCARD
             return new Blob([outputData], { type: 'text/plain' });
         } catch (err) {
             console.error('Data preparation failed:', err);
-            throw err;
+            
+            // Even if everything fails, return something that can be copied
+            const fallbackMessage = "Menu data conversion failed. Please try again or contact support.";
+            return new Blob([fallbackMessage], { type: 'text/plain' });
         }
     };
 

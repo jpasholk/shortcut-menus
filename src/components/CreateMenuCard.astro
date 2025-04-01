@@ -78,7 +78,7 @@ import Card from './Card.astro';
             Enter Lucide Icon Name
           </label>
           
-          <!-- Circular Toggle - moved here from PreviewExportCard -->
+          <!-- Circular Toggle remains unchanged -->
           <label class="flex items-center space-x-3 cursor-pointer">
             <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
               Circular
@@ -103,7 +103,7 @@ import Card from './Card.astro';
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
           Find icons at <a href="https://lucide.dev/icons" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300">lucide.dev/icons</a>
         </p>
-        <div class="flex gap-4 w-full">
+        <div class="flex gap-2 w-full">
           <input 
             type="text" 
             id="icon-name" 
@@ -117,11 +117,25 @@ import Card from './Card.astro';
           <button 
             type="button"
             id="add-icon"
-            class="px-4 py-2 bg-indigo-600 text-white dark:bg-indigo-500 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 
+            class="px-4 py-2 whitespace-nowrap bg-indigo-600 text-white dark:bg-indigo-500 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 
                   focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-offset-2 transition-colors"
           >
             Try Icon
           </button>
+          <label 
+            class="px-4 py-2 whitespace-nowrap border border-gray-200 dark:border-gray-600 rounded-md 
+                  text-gray-400 dark:text-gray-500 bg-gray-100 dark:bg-gray-700 cursor-not-allowed"
+            title="Coming soon"
+          >
+            Upload Image
+          </label>
+          <input 
+            type="file" 
+            id="image-upload" 
+            accept="image/*"
+            class="hidden"
+            disabled
+          >
         </div>
       </div>
 

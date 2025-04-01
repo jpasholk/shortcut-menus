@@ -23,7 +23,22 @@ export async function prepareExportData(): Promise<{
             
             for (let i = 0; i < state.menuItems.length; i++) {
                 const item = state.menuItems[i];
-                const pngBase64 = await svgToPngBase64(item.iconName || 'home');
+                
+                // Handle custom image or Lucide icon with error fallback
+                let pngBase64;
+                try {
+                    if (item.customImageData) {
+                        // Extract base64 part from custom image data
+                        pngBase64 = item.customImageData.replace(/^data:image\/[a-z]+;base64,/, '');
+                    } else {
+                        // Generate from icon name
+                        pngBase64 = await svgToPngBase64(item.iconName || 'home');
+                    }
+                } catch (err) {
+                    console.warn("Icon conversion failed, using fallback:", err);
+                    // Transparent pixel fallback
+                    pngBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+                }
                 
                 output.menu[`option${i+1}`] = {
                     title: item.title,
@@ -41,7 +56,21 @@ export async function prepareExportData(): Promise<{
             let vCardOutput = '';
             
             for (const item of state.menuItems) {
-                const pngBase64 = await svgToPngBase64(item.iconName || 'home');
+                // Handle custom image or Lucide icon with error fallback
+                let pngBase64;
+                try {
+                    if (item.customImageData) {
+                        // Extract base64 part from custom image data
+                        pngBase64 = item.customImageData.replace(/^data:image\/[a-z]+;base64,/, '');
+                    } else {
+                        // Generate from icon name
+                        pngBase64 = await svgToPngBase64(item.iconName || 'home');
+                    }
+                } catch (err) {
+                    console.warn("Icon conversion failed, using fallback:", err);
+                    // Transparent pixel fallback
+                    pngBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+                }
                 
                 vCardOutput += `BEGIN:VCARD
 VERSION:3.0
