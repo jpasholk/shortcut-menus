@@ -1,9 +1,16 @@
 ---
 interface Props {
   title?: string;
+  description?: string;
 }
 
-const { title = "Shortcut Menu Builder" } = Astro.props;
+const { 
+  title = "Shortcut Menus",
+  description = "Create iOS shortcut menus with custom icons and export as vCard or JSON"
+} = Astro.props;
+
+// Get the site URL from environment or fallback to localhost
+const siteUrl = import.meta.env.SITE || "https://shortcut-menus.jpshlk.com";
 ---
 
 <head>
@@ -12,5 +19,23 @@ const { title = "Shortcut Menu Builder" } = Astro.props;
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="generator" content={Astro.generator} />
   <title>{title}</title>
+  
+  <!-- Open Graph / Social Media Meta Tags -->
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={siteUrl} />
+  <meta property="og:image" content={`${siteUrl}/og-image.png`} />
+  <meta property="og:image:alt" content="Shortcut Menu Builder" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  
+  <!-- Twitter Card data -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={`${siteUrl}/og-image.png`} />
+  
+  <!-- External scripts -->
   <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
 </head>

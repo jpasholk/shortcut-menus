@@ -29,28 +29,50 @@ import Card from './Card.astro';
 
     <!-- JSON Output -->
     <div class="mt-6">
-      <div class="flex justify-between items-center mb-2">
+      <div class="flex justify-between items-center mb-4">
         <h3 class="text-lg font-medium text-gray-800 dark:text-white">Output</h3>
         
-        <!-- Advanced Toggle -->
-        <label class="flex items-center space-x-3 cursor-pointer">
-          <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
-            Advanced
-          </span>
-          <div class="relative">
-            <input 
-              type="checkbox" 
-              id="advanced-toggle" 
-              class="sr-only peer"
-            >
-            <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer 
-                      peer-checked:after:translate-x-full after:content-[''] 
-                      after:absolute after:top-0.5 after:left-[2px] after:bg-white 
-                      after:rounded-full after:h-5 after:w-5 after:transition-all 
-                      peer-checked:bg-indigo-600">
+        <div class="flex flex-col gap-2 sm:flex-row sm:gap-4">
+          <!-- JSON Toggle (was Advanced) -->
+          <label class="flex items-center space-x-2 sm:space-x-3 cursor-pointer">
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+              JSON
+            </span>
+            <div class="relative">
+              <input 
+                type="checkbox" 
+                id="advanced-toggle" 
+                class="sr-only peer"
+              >
+              <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer 
+                        peer-checked:after:translate-x-full after:content-[''] 
+                        after:absolute after:top-0.5 after:left-[2px] after:bg-white 
+                        after:rounded-full after:h-5 after:w-5 after:transition-all 
+                        peer-checked:bg-indigo-600">
+              </div>
             </div>
-          </div>
-        </label>
+          </label>
+          
+          <!-- Images Toggle (new) -->
+          <label class="flex items-center space-x-2 sm:space-x-3 cursor-pointer">
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
+              Images → JSON
+            </span>
+            <div class="relative">
+              <input 
+                type="checkbox" 
+                id="images-toggle" 
+                class="sr-only peer"
+              >
+              <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer 
+                        peer-checked:after:translate-x-full after:content-[''] 
+                        after:absolute after:top-0.5 after:left-[2px] after:bg-white 
+                        after:rounded-full after:h-5 after:w-5 after:transition-all 
+                        peer-checked:bg-indigo-600">
+              </div>
+            </div>
+          </label>
+        </div>
       </div>
       <pre id="output-preview" 
            class="bg-gray-900 text-gray-100 dark:bg-gray-700 dark:text-gray-100 
