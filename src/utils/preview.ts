@@ -28,9 +28,18 @@ export async function getPreviewText(): Promise<string> {
         let vCardOutput = '';
         
         for (const item of state.menuItems) {
-            const iconPlaceholder = item.iconName 
-                ? "{base64 icon string...}"
-                : "";
+            let iconPlaceholder;
+            
+            if (item.customImageData) {
+                // Custom uploaded image
+                iconPlaceholder = "{Custom uploaded image...}";
+            } else if (item.iconName) {
+                // Lucide icon
+                iconPlaceholder = `{${item.iconName} icon...}`;
+            } else {
+                // No icon
+                iconPlaceholder = "";
+            }
             
             vCardOutput += `BEGIN:VCARD
 VERSION:3.0
@@ -39,6 +48,7 @@ ORG:${item.subtitle || ''};
 NOTE:${item.data || ''};
 PHOTO;ENCODING=b:${iconPlaceholder};
 END:VCARD
+
 `;
         }
         

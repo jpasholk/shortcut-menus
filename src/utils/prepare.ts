@@ -79,9 +79,11 @@ ORG:${item.subtitle};
 NOTE:${item.data};
 PHOTO;ENCODING=b:${pngBase64};
 END:VCARD
+
 `;
             }
             
+            // Trim the final output to remove trailing whitespace
             outputData = vCardOutput.trim();
             fileName = 'menu-data.vcf';
             mimeType = 'text/vcard';

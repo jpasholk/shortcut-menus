@@ -79,7 +79,8 @@ ORG:${item.subtitle};
 NOTE:${item.data};
 PHOTO;ENCODING=b:${iconData};
 END:VCARD
-`;
+
+`; // Note the extra newline here
                 }
                 
                 outputData = vCardOutput.trim();
