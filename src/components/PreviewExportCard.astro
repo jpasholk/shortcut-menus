@@ -53,25 +53,34 @@ import Card from './Card.astro';
             </div>
           </label>
           
-          <!-- Images Toggle (new) -->
-          <label class="flex items-center space-x-2 sm:space-x-3 cursor-pointer">
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-200">
-              Images → JSON
-            </span>
-            <div class="relative">
-              <input 
-                type="checkbox" 
-                id="images-toggle" 
-                class="sr-only peer"
-              >
-              <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer 
-                        peer-checked:after:translate-x-full after:content-[''] 
-                        after:absolute after:top-0.5 after:left-[2px] after:bg-white 
-                        after:rounded-full after:h-5 after:w-5 after:transition-all 
-                        peer-checked:bg-indigo-600">
+          <!-- Images Toggle (disabled with tooltip) -->
+          <div class="relative group">
+            <label class="flex items-center space-x-2 sm:space-x-3 opacity-50 cursor-not-allowed">
+              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Images → JSON
+              </span>
+              <div class="relative">
+                <input 
+                  type="checkbox" 
+                  id="images-toggle" 
+                  class="sr-only peer"
+                  disabled
+                >
+                <div class="w-11 h-6 bg-gray-300 dark:bg-gray-600 rounded-full peer 
+                          after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white 
+                          after:rounded-full after:h-5 after:w-5 after:transition-all">
+                </div>
               </div>
+            </label>
+            
+            <!-- Tooltip that appears on hover -->
+            <div class="absolute -top-9 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-200 whitespace-nowrap z-10">
+              Coming soon!
+              <!-- Arrow pointing down -->
+              <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full w-2 h-2 
+                          bg-gray-800 rotate-45"></div>
             </div>
-          </label>
+          </div>
         </div>
       </div>
       <pre id="output-preview" 
