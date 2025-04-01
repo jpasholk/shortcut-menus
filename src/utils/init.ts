@@ -8,6 +8,7 @@ import {
     removeMenuItem,
     syncFormToActiveItem,
     updateActiveItem,
+    getActiveItem,
     toggleCircular,
     toggleAdvancedMode,
     resetState
@@ -56,12 +57,14 @@ export function initShortcutMenu(): void {
     });
 
     iconColorInput?.addEventListener('input', async (e) => {
-        updateActiveItem('iconColor', (e.target as HTMLInputElement).value);
+        const newColor = (e.target as HTMLInputElement).value;
+        updateActiveItem('iconColor', newColor);
         await updatePreview();
     });
 
     bgColorInput?.addEventListener('input', async (e) => {
-        updateActiveItem('backgroundColor', (e.target as HTMLInputElement).value);
+        const newColor = (e.target as HTMLInputElement).value;
+        updateActiveItem('backgroundColor', newColor);
         await updatePreview();
     });
 
@@ -130,9 +133,19 @@ export function initShortcutMenu(): void {
         const file = this.files?.[0];
         if (!file) return;
 
-        // Validate file is an image
-        if (!file.type.startsWith('image/')) {
-            alert('Please select an image file');
+        // Enhanced validation for file type
+        const validImageTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
+        if (!validImageTypes.includes(file.type)) {
+            alert('Please select a valid image file (JPEG, PNG, GIF, SVG, or WebP)');
+            this.value = '';
+            return;
+        }
+
+        // File size check (limit to 5MB)
+        const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
+        if (file.size > maxSizeInBytes) {
+            alert('Image file is too large. Please select an image smaller than 5MB.');
+            this.value = '';
             return;
         }
 
@@ -151,11 +164,11 @@ export function initShortcutMenu(): void {
             try {
                 const imageDataUrl = event.target?.result as string;
                 
-                // Process image to ensure consistent format
-                const processedImageData = await processImage(imageDataUrl);
+                // Process image for size but without color filters
+                const processedImage = await processImage(imageDataUrl);
                 
                 // Update state with processed image
-                updateActiveItem('customImageData', processedImageData);
+                updateActiveItem('customImageData', processedImage);
                 updateActiveItem('iconName', ''); // Clear icon name when using custom image
                 
                 // Update UI
@@ -163,6 +176,17 @@ export function initShortcutMenu(): void {
             } catch (err) {
                 console.error('Image processing failed:', err);
                 alert('Failed to process image. Please try another one.');
+                
+                // Restore previous icon if there was one
+                const currentItem = getActiveItem();
+                if (currentItem.iconName) {
+                    // Keep using the current icon name
+                    await updatePreview();
+                } else {
+                    // Set a default icon if there wasn't one
+                    updateActiveItem('iconName', 'image');
+                    await updatePreview();
+                }
             }
         };
         

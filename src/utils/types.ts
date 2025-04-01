@@ -9,6 +9,7 @@ export interface MenuDataItem {
     subtitle: string;
     iconName: string;
     customImageData?: string;
+    originalImageData?: string;
     data: string;
     iconColor: string;
     backgroundColor: string;
