@@ -12,10 +12,23 @@ const { title = "Shortcut Menu Builder" } = Astro.props;
 <!doctype html>
 <html lang="en">
   <Head title={title} />
-	<body class="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
-		<main>
-			<slot />
-		</main>
-		<Footer />
-	</body>
+  <body class="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900 relative">
+    <!-- Gradient background with higher z-index (only in dark mode) -->
+    <div class="fixed inset-0 z-[-1] hidden dark:block">
+      <!-- Base gradient -->
+      <div class="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black"></div>
+      
+      <!-- Colored blobs -->
+      <div class="absolute inset-0">
+        <div class="absolute top-1/4 left-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 opacity-30 blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-1/2 h-1/2 rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500 opacity-30 blur-3xl"></div>
+      </div>
+    </div>
+    
+    <!-- Main content -->
+    <main class="flex-1 relative z-10">
+      <slot />
+    </main>
+    <Footer class="relative z-10" />
+  </body>
 </html>

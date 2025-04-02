@@ -1,6 +1,6 @@
 # iOS Shortcut Menu Generator
 
-![A short git showing the functionality of Shortcut Menu Creator.](/public/shortcut-menus.gif)
+![Screenshots of Shortcut Menus in action on devices](/public/og-image.png)
 
 A web-based tool for creating custom menus for iOS Shortcuts. Built with Astro and TailwindCSS.
 
@@ -64,6 +64,12 @@ END:VCARD
 - [Astro](https://astro.build)
 - [TailwindCSS](https://tailwindcss.com)
 - [Lucide Icons](https://lucide.dev)
+
+## Credits
+
+- [BgVault](https://www.bgvault.tech) - for the inspiration and code for the gradient background.
+- gluebyte - VCARD info and general Shortcuts wizard.
+- Catify - information about base64 in VCARDS.
 
 ## 📝 License
 
