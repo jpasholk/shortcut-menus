@@ -3,7 +3,12 @@ import Card from './Card.astro';
 ---
 
 <Card title="Preview & Export" headerRight={true} class="flex flex-col">
-  <div slot="header-right">
+  <div slot="header-right" class="flex items-center gap-3">
+    <!-- Reorder hint - hidden on mobile, shown inline on larger screens -->
+    <div class="hidden sm:flex items-center text-xs text-gray-500 dark:text-gray-400">
+      <i data-lucide="move" class="w-3 h-3 mr-1"></i> Drag items to reorder
+    </div>
+    
     <!-- Add button -->
     <button
       id="add-menu-item"
@@ -14,7 +19,13 @@ import Card from './Card.astro';
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
     </button>
   </div>
+  
   <div class="flex-1">
+    <!-- Reorder hint - shown on mobile only, hidden on larger screens -->
+    <div class="md:hidden text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center">
+      <i data-lucide="move" class="w-3 h-3 mr-1"></i> Drag items to reorder
+    </div>
+    
     <div id="menu-preview" class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
       <div class="flex items-center gap-4">
         <div class="w-10 h-10 flex items-center justify-center bg-gray-50 dark:bg-gray-700 rounded-lg">

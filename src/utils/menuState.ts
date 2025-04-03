@@ -132,3 +132,40 @@ export function resetState(): void {
     state.isCircular = true;
     state.isAdvancedMode = false;
 }
+
+/**
+ * Reorder menu items by moving an item from one position to another
+ * @param fromIndex Source index
+ * @param toIndex Destination index
+ */
+export function reorderMenuItems(fromIndex: number, toIndex: number): void {
+    // Make sure indexes are valid
+    if (
+        fromIndex < 0 || 
+        fromIndex >= state.menuItems.length || 
+        toIndex < 0 || 
+        toIndex >= state.menuItems.length ||
+        fromIndex === toIndex
+    ) {
+        return;
+    }
+    
+    // Remove the item from its original position
+    const [movedItem] = state.menuItems.splice(fromIndex, 1);
+    
+    // Insert it at the new position
+    state.menuItems.splice(toIndex, 0, movedItem);
+    
+    // If the active item was moved, update its index
+    if (state.activeItemIndex === fromIndex) {
+        state.activeItemIndex = toIndex;
+    } 
+    // Otherwise, adjust the active index if needed based on the move
+    else if (
+        (fromIndex < state.activeItemIndex && toIndex >= state.activeItemIndex) || 
+        (fromIndex > state.activeItemIndex && toIndex <= state.activeItemIndex)
+    ) {
+        // The moved item crossed over the active item
+        state.activeItemIndex += (fromIndex < toIndex) ? -1 : 1;
+    }
+}

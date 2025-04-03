@@ -1,9 +1,13 @@
 /**
  * UI rendering utilities for menu items
  */
-import { state, setActiveItem, removeMenuItem, syncFormToActiveItem } from './menuState';
+import { state, setActiveItem, removeMenuItem, syncFormToActiveItem, reorderMenuItems } from './menuState';
 import { waitForLucide } from './icons';
 import { getPreviewText } from './preview';
+
+// Add these variables at the top of the file
+let dragSource: number | null = null;
+let dragTarget: number | null = null;
 
 /**
  * Update the visual preview of menu items in the UI
@@ -33,10 +37,17 @@ export async function updatePreview(): Promise<void> {
             iconHtml = `<i data-lucide="${iconToUse}" class="w-6 h-6" style="color: ${item.iconColor}"></i>`;
         }
         
-        // Enhance the highlight for active item
+        // Enhanced menu item with drag handle
         previewHtml += `
-            <div class="menu-item ${isActive ? 'bg-indigo-50 dark:bg-indigo-900/20' : ''} py-2 ${i > 0 ? 'border-t border-gray-200 dark:border-gray-700' : ''} rounded-lg">
+            <div 
+                class="menu-item ${isActive ? 'bg-indigo-50 dark:bg-indigo-900/20' : ''} py-2 ${i > 0 ? 'border-t border-gray-200 dark:border-gray-700' : ''} rounded-lg"
+                data-index="${i}"
+                draggable="true"
+            >
                 <div class="flex items-center gap-4 px-3">
+                    <div class="drag-handle cursor-grab active:cursor-grabbing p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                        <i data-lucide="grip-vertical" class="w-4 h-4"></i>
+                    </div>
                     <div class="w-10 h-10 flex items-center justify-center ${state.isCircular ? 'rounded-full' : 'rounded-lg'}"
                          style="background-color: ${item.backgroundColor}">
                         ${iconHtml}
@@ -59,7 +70,65 @@ export async function updatePreview(): Promise<void> {
     
     menuPreview.innerHTML = previewHtml;
     
-    // Add event listeners to edit/delete buttons
+    // Add event listeners to menu items for drag and drop
+    const menuItems = menuPreview.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+        // Drag events
+        item.addEventListener('dragstart', (e: Event) => {
+            const dragEvent = e as DragEvent;
+            dragSource = parseInt((dragEvent.currentTarget as HTMLElement).dataset.index || '0');
+            (dragEvent.currentTarget as HTMLElement).classList.add('opacity-50', 'border-2', 'border-dashed', 'border-indigo-400');
+            
+            // Required for Firefox to work
+            if (dragEvent.dataTransfer) {
+                dragEvent.dataTransfer.effectAllowed = 'move';
+                dragEvent.dataTransfer.setData('text/plain', ''); // Required for IE
+            }
+        });
+        
+        item.addEventListener('dragend', (e) => {
+            (e.currentTarget as HTMLElement).classList.remove('opacity-50', 'border-2', 'border-dashed', 'border-indigo-400');
+            
+            if (dragSource !== null && dragTarget !== null && dragSource !== dragTarget) {
+                // Perform the reorder
+                reorderMenuItems(dragSource, dragTarget);
+                
+                // Update UI after reordering
+                syncFormToActiveItem();
+                updatePreview();
+            }
+            
+            // Reset drag state
+            dragSource = null;
+            dragTarget = null;
+        });
+        
+        item.addEventListener('dragover', (e) => {
+            // Prevent default to allow drop
+            e.preventDefault();
+            return false;
+        });
+        
+        item.addEventListener('dragenter', (e) => {
+            const target = e.currentTarget as HTMLElement;
+            dragTarget = parseInt(target.dataset.index || '0');
+            target.classList.add('bg-indigo-100', 'dark:bg-indigo-900/40');
+        });
+        
+        item.addEventListener('dragleave', (e) => {
+            const target = e.currentTarget as HTMLElement;
+            target.classList.remove('bg-indigo-100', 'dark:bg-indigo-900/40');
+        });
+        
+        item.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const target = e.currentTarget as HTMLElement;
+            target.classList.remove('bg-indigo-100', 'dark:bg-indigo-900/40');
+            dragTarget = parseInt(target.dataset.index || '0');
+        });
+    });
+    
+    // Add edit/delete button event listeners
     const editButtons = menuPreview.querySelectorAll('.edit-item-btn');
     editButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
