@@ -8,6 +8,8 @@ const { title, subtitle } = Astro.props;
 ---
 
 <header class="text-center mb-8">
-  <h1 class="text-3xl md:text-4xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">{title}</h1>
+  <h1 class="text-3xl md:text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-400  to-sky-400">
+    {title}
+  </h1>
   <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300">{subtitle}</p>
 </header>

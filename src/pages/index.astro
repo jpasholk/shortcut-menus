@@ -9,26 +9,19 @@ import PreviewExportCard from '../components/PreviewExportCard.astro';
   <div class="pt-8 pb-4">
     <div class="max-w-7xl mx-auto px-3 sm:px-4">
       <Header 
-        title="Shortcut Menus (Beta 4)" 
-        subtitle="iOS Shortcut Menu Generator" 
+        title="Shortcut Menus (Beta 5)" 
+        subtitle="An iOS Shortcut Menu Generator" 
       />
-
-      <!-- Use grid with equal-height columns -->
       <div class="grid md:grid-cols-2 gap-6 sm:gap-8">
-        <div class=""> <!-- Full height container -->
-          <!-- Create Menu Card -->
+        <div>
           <CreateMenuCard />
         </div>
-        
-        <div class=""> <!-- Full height container -->
-          <!-- Preview Export Card -->
+        <div>
           <PreviewExportCard />
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Notification -->
   <div 
     id="notification" 
     class="fixed bottom-4 right-4 bg-green-500 dark:bg-green-600 text-white px-4 py-2 rounded-md shadow-lg 
@@ -39,10 +32,8 @@ import PreviewExportCard from '../components/PreviewExportCard.astro';
 </Layout>
 
 <script>
-  // Import directly from the utils folder
   import { initShortcutMenu } from '../utils';
   
-  // Call it immediately to set up the UI
   initShortcutMenu();
 </script>
 
