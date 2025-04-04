@@ -42,12 +42,23 @@ export function copyToClipboard(notification?: HTMLElement): void {
                         iconData = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
                     }
                     
-                    output.menu[`option${i+1}`] = {
+                    // Create the menu item object with required fields
+                    const menuItem: Record<string, any> = {
                         title: item.title,
-                        icon: iconData,
-                        sub: item.subtitle,
-                        data: item.data
+                        icon: iconData
                     };
+                    
+                    // Only add subtitle if it exists and isn't empty
+                    if (item.subtitle && item.subtitle.trim()) {
+                        menuItem.sub = item.subtitle;
+                    }
+                    
+                    // Only add data if it exists and isn't empty
+                    if (item.data && item.data.trim()) {
+                        menuItem.data = item.data;
+                    }
+                    
+                    output.menu[`option${i+1}`] = menuItem;
                 }
                 
                 outputData = JSON.stringify(output, null, 2);
@@ -72,11 +83,20 @@ export function copyToClipboard(notification?: HTMLElement): void {
                         iconData = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
                     }
                     
+                    // Start building the vCard
                     vCardOutput += `BEGIN:VCARD
 VERSION:3.0
 N:${item.title}
-ORG:${item.subtitle}
-NOTE:${item.data}
+ORG:${item.subtitle}`;
+
+                    // Only include NOTE field if data exists and isn't empty
+                    if (item.data && item.data.trim()) {
+                        vCardOutput += `
+NOTE:${item.data}`;
+                    }
+                    
+                    // Complete the vCard
+                    vCardOutput += `
 PHOTO;BASE64:${iconData}
 END:VCARD
 

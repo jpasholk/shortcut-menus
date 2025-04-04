@@ -14,12 +14,22 @@ export async function getPreviewText(): Promise<string> {
         
         for (let i = 0; i < state.menuItems.length; i++) {
             const item = state.menuItems[i];
-            output.menu[`option${i+1}`] = {
+            const menuItem: Record<string, any> = {
                 title: item.title,
-                icon: "{base64 icon string...}",
-                sub: item.subtitle,
-                data: item.data
+                icon: "{base64 icon string...}"
             };
+            
+            // Only include subtitle if not empty
+            if (item.subtitle && item.subtitle.trim()) {
+                menuItem.sub = item.subtitle;
+            }
+            
+            // Only include data if not empty
+            if (item.data && item.data.trim()) {
+                menuItem.data = item.data;
+            }
+            
+            output.menu[`option${i+1}`] = menuItem;
         }
         
         return JSON.stringify(output, null, 2);
@@ -44,8 +54,15 @@ export async function getPreviewText(): Promise<string> {
             vCardOutput += `BEGIN:VCARD
 VERSION:3.0
 N:${item.title || ''}
-ORG:${item.subtitle || ''}
-NOTE:${item.data || ''}
+ORG:${item.subtitle || ''}`;
+
+            // Only include NOTE field if data is not empty
+            if (item.data && item.data.trim()) {
+                vCardOutput += `
+NOTE:${item.data}`;
+            }
+            
+            vCardOutput += `
 PHOTO;BASE64:${iconPlaceholder}
 END:VCARD
 

@@ -40,12 +40,23 @@ export async function prepareExportData(): Promise<{
                     pngBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
                 }
                 
-                output.menu[`option${i+1}`] = {
+                // Create menu item object with required fields
+                const menuItem: Record<string, any> = {
                     title: item.title,
-                    icon: pngBase64,
-                    sub: item.subtitle,
-                    data: item.data
+                    icon: pngBase64
                 };
+                
+                // Only add subtitle if it exists and isn't empty
+                if (item.subtitle && item.subtitle.trim()) {
+                    menuItem.sub = item.subtitle;
+                }
+                
+                // Only add data if it exists and isn't empty
+                if (item.data && item.data.trim()) {
+                    menuItem.data = item.data;
+                }
+                
+                output.menu[`option${i+1}`] = menuItem;
             }
             
             outputData = JSON.stringify(output, null, 2);
@@ -72,11 +83,20 @@ export async function prepareExportData(): Promise<{
                     pngBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
                 }
                 
+                // Start building vCard
                 vCardOutput += `BEGIN:VCARD
 VERSION:3.0
 N;CHARSET=utf-8:${item.title};
-ORG:${item.subtitle};
-NOTE:${item.data};
+ORG:${item.subtitle};`;
+
+                // Only include NOTE field if data exists and isn't empty
+                if (item.data && item.data.trim()) {
+                    vCardOutput += `
+NOTE:${item.data};`;
+                }
+                
+                // Complete the vCard
+                vCardOutput += `
 PHOTO;ENCODING=b:${pngBase64};
 END:VCARD
 
