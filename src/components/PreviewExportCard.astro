@@ -4,8 +4,8 @@ import Card from './Card.astro';
 
 <Card title="Preview & Export" headerRight={true} class="flex flex-col">
   <div slot="header-right" class="flex items-center gap-3">
-    <!-- Reorder hint - hidden on mobile, shown inline on larger screens -->
-    <div class="hidden sm:flex items-center text-xs text-gray-500 dark:text-gray-400">
+    <!-- Reorder hint - only visible on large screens (lg+) -->
+    <div class="hidden lg:flex items-center text-xs text-gray-500 dark:text-gray-400">
       <i data-lucide="move" class="w-3 h-3 mr-1"></i> Drag items to reorder
     </div>
     
@@ -21,8 +21,8 @@ import Card from './Card.astro';
   </div>
   
   <div class="flex-1">
-    <!-- Reorder hint - shown on mobile only, hidden on larger screens -->
-    <div class="md:hidden text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center">
+    <!-- Reorder hint - visible on mobile and tablets (everything below lg) -->
+    <div class="lg:hidden text-xs text-gray-500 dark:text-gray-400 mb-2 flex items-center">
       <i data-lucide="move" class="w-3 h-3 mr-1"></i> Drag items to reorder
     </div>
     
