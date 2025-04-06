@@ -11,7 +11,8 @@ import {
     getActiveItem,
     toggleCircular,
     toggleAdvancedMode,
-    resetState
+    resetState,
+    initializeState  // Add this import
 } from './menuState';
 import { validateIcon, waitForLucide } from './icons';
 import { updatePreview, updateUI } from './ui';
@@ -23,6 +24,9 @@ import { processImage } from './images';
  * Initialize the application and set up event listeners
  */
 export function initShortcutMenu(): void {
+    // Initialize state with dark/light mode colors
+    initializeState();
+
     // DOM Elements
     const menuTitleInput = document.getElementById('menu-title') as HTMLInputElement;
     const menuSubtitleInput = document.getElementById('menu-subtitle') as HTMLInputElement;
@@ -208,7 +212,33 @@ export function initShortcutMenu(): void {
     // Initialize the UI
     (async () => {
         await waitForLucide();
-        syncFormToActiveItem();
+        syncFormToActiveItem(); // This will pull the correct colors to the form
         await updateUI();
     })();
+
+    // Listen for color scheme changes
+    const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    colorSchemeQuery.addEventListener('change', (e) => {
+        // Only update if we're on the first item with default colors
+        if (state.activeItemIndex === 0 && 
+            state.menuItems.length === 1 && 
+            !state.menuItems[0].title && 
+            !state.menuItems[0].subtitle && 
+            !state.menuItems[0].iconName) {
+            
+            // If we're still at the initial state, update colors
+            const newIconColor = e.matches ? '#ffffff' : '#000000';
+            const newBgColor = e.matches ? '#000000' : '#ffffff';
+            
+            updateActiveItem('iconColor', newIconColor);
+            updateActiveItem('backgroundColor', newBgColor);
+            
+            // Update form controls
+            if (iconColorInput) iconColorInput.value = newIconColor;
+            if (bgColorInput) bgColorInput.value = newBgColor;
+            
+            // Update UI
+            updatePreview();
+        }
+    });
 }

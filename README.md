@@ -38,10 +38,10 @@ All commands are run from the root of the project, from a terminal:
 ```text
 BEGIN:VCARD
 VERSION:3.0
-N;CHARSET=utf-8:[title];
-ORG:[subtitle];
-NOTE:[data];
-PHOTO;ENCODING=b:[base64];
+N:
+ORG:
+NOTE:
+PHOTO;BASE64:
 END:VCARD
 ```
 
@@ -68,7 +68,7 @@ END:VCARD
 ## Credits
 
 - [BgVault](https://www.bgvault.tech) - for the inspiration and code for the gradient background.
-- gluebyte - VCARD info and general Shortcuts wizard.
+- gluebyte - VCARD info and general Shortcuts wizardry.
 - Catify - information about base64 in VCARDS.
 
 ## 📝 License

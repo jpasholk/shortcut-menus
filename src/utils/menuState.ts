@@ -3,6 +3,20 @@
  */
 import type { MenuDataItem, GlobalState } from './types';
 
+// Function to determine if dark mode is active
+function isDarkModeActive(): boolean {
+    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+// Get the initial colors based on color scheme
+function getInitialColors() {
+    const darkMode = isDarkModeActive();
+    return {
+        iconColor: darkMode ? "#ffffff" : "#000000",
+        backgroundColor: darkMode ? "#000000" : "#ffffff"
+    };
+}
+
 // Initial state with one menu item
 export const state: GlobalState = {
     menuItems: [{
@@ -11,13 +25,22 @@ export const state: GlobalState = {
         subtitle: "",
         iconName: "",
         data: "",
-        iconColor: "#000000",
-        backgroundColor: "#ffffff"
+        iconColor: "#000000", // This will be updated in init function
+        backgroundColor: "#ffffff" // This will be updated in init function
     }],
     activeItemIndex: 0,
     isCircular: true,
     isAdvancedMode: false
 };
+
+/**
+ * Initialize state with correct dark/light mode colors
+ */
+export function initializeState(): void {
+    const colors = getInitialColors();
+    state.menuItems[0].iconColor = colors.iconColor;
+    state.menuItems[0].backgroundColor = colors.backgroundColor;
+}
 
 /**
  * Add a new menu item to the state
@@ -116,6 +139,8 @@ export function toggleAdvancedMode(isAdvanced: boolean): void {
  * Reset the state to initial values
  */
 export function resetState(): void {
+    const colors = getInitialColors();
+    
     // Clear existing menu items
     state.menuItems = [{
         id: crypto.randomUUID(),
@@ -123,8 +148,8 @@ export function resetState(): void {
         subtitle: "",
         iconName: "",
         data: "",
-        iconColor: "#000000",
-        backgroundColor: "#ffffff"
+        iconColor: colors.iconColor,
+        backgroundColor: colors.backgroundColor
     }];
     
     // Reset indexes and settings
