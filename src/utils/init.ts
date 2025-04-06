@@ -12,13 +12,15 @@ import {
     toggleCircular,
     toggleAdvancedMode,
     resetState,
-    initializeState  // Add this import
+    initializeState,
+    toggleMenuType // Add this import
 } from './menuState';
 import { validateIcon, waitForLucide } from './icons';
-import { updatePreview, updateUI } from './ui';
+import { updatePreview, updateUI, toggleMenuTypeVisibility } from './ui'; // Add toggleMenuTypeVisibility
 import { copyToClipboard } from './clipboard';
 import { downloadData } from './download';
 import { processImage } from './images';
+import { MenuType } from './types'; // Add MenuType
 
 /**
  * Initialize the application and set up event listeners
@@ -43,6 +45,91 @@ export function initShortcutMenu(): void {
     const addMenuItemButton = document.getElementById('add-menu-item');
     const resetButton = document.getElementById('reset-button');
     const imageUploadInput = document.getElementById('image-upload') as HTMLInputElement;
+    const menuOptionInput = document.getElementById('menu-option') as HTMLInputElement;
+
+    // Setup menu type radio buttons
+    const iconRadio = document.getElementById('menu-type-icon') as HTMLInputElement;
+    const simpleRadio = document.getElementById('menu-type-simple') as HTMLInputElement;
+    // Add mobile radio buttons
+    const iconRadioMobile = document.getElementById('menu-type-icon-mobile') as HTMLInputElement;
+    const simpleRadioMobile = document.getElementById('menu-type-simple-mobile') as HTMLInputElement;
+
+    // Function to update all radio buttons based on state
+    function syncRadioButtons() {
+        // Set desktop radios
+        if (iconRadio) iconRadio.checked = state.menuType === MenuType.ICON;
+        if (simpleRadio) simpleRadio.checked = state.menuType === MenuType.SIMPLE;
+        
+        // Set mobile radios
+        if (iconRadioMobile) iconRadioMobile.checked = state.menuType === MenuType.ICON;
+        if (simpleRadioMobile) simpleRadioMobile.checked = state.menuType === MenuType.SIMPLE;
+    }
+
+    // Function to handle radio button changes
+    async function handleMenuTypeChange(type: MenuType) {
+        toggleMenuType(type);
+        toggleMenuTypeVisibility();
+        syncFormToActiveItem();
+        syncRadioButtons(); // Keep all radio buttons in sync
+        
+        // Reset validation state
+        if (menuSubtitleInput) {
+            menuSubtitleInput.classList.remove('border-red-500');
+            const validationMsg = document.getElementById('subtitle-validation');
+            if (validationMsg) {
+                validationMsg.remove();
+            }
+        }
+        
+        if (menuOptionInput) {
+            menuOptionInput.classList.remove('border-red-500');
+        }
+
+        // Update the output preview
+        const outputPreview = document.getElementById('output-preview');
+        if (outputPreview) {
+            outputPreview.textContent = await getPreviewText();
+        }
+        
+        updateUI();
+    }
+
+    // Add event listeners to all radio buttons
+    if (iconRadio && simpleRadio) {
+        // Desktop radio buttons
+        iconRadio.addEventListener('change', async () => {
+            if (iconRadio.checked) {
+                await handleMenuTypeChange(MenuType.ICON);
+            }
+        });
+
+        simpleRadio.addEventListener('change', async () => {
+            if (simpleRadio.checked) {
+                await handleMenuTypeChange(MenuType.SIMPLE);
+            }
+        });
+    }
+
+    // Mobile radio buttons
+    if (iconRadioMobile && simpleRadioMobile) {
+        iconRadioMobile.addEventListener('change', async () => {
+            if (iconRadioMobile.checked) {
+                await handleMenuTypeChange(MenuType.ICON);
+            }
+        });
+
+        simpleRadioMobile.addEventListener('change', async () => {
+            if (simpleRadioMobile.checked) {
+                await handleMenuTypeChange(MenuType.SIMPLE);
+            }
+        });
+    }
+
+    // Initial sync of radio buttons
+    syncRadioButtons();
+
+    // Initial visibility setup
+    toggleMenuTypeVisibility();
 
     // Event listeners for form inputs
     menuTitleInput?.addEventListener('input', async (e) => {
@@ -51,7 +138,34 @@ export function initShortcutMenu(): void {
     });
 
     menuSubtitleInput?.addEventListener('input', async (e) => {
-        updateActiveItem('subtitle', (e.target as HTMLInputElement).value);
+        const value = (e.target as HTMLInputElement).value;
+        updateActiveItem('subtitle', value);
+        
+        // Highlight input as invalid if it contains spaces in SIMPLE mode
+        if (state.menuType === MenuType.SIMPLE) {
+            const hasSpaces = value.includes(' ');
+            
+            if (hasSpaces) {
+                menuSubtitleInput.classList.add('border-red-500');
+                // Create or update validation message
+                let validationMsg = document.getElementById('subtitle-validation');
+                if (!validationMsg) {
+                    validationMsg = document.createElement('p');
+                    validationMsg.id = 'subtitle-validation';
+                    validationMsg.className = 'text-red-500 text-xs mt-1';
+                    menuSubtitleInput.parentNode?.appendChild(validationMsg);
+                }
+                validationMsg.textContent = 'Phone numbers cannot contain spaces';
+            } else {
+                menuSubtitleInput.classList.remove('border-red-500');
+                // Remove validation message if exists
+                const validationMsg = document.getElementById('subtitle-validation');
+                if (validationMsg) {
+                    validationMsg.remove();
+                }
+            }
+        }
+        
         await updatePreview();
     });
 
@@ -69,6 +183,22 @@ export function initShortcutMenu(): void {
     bgColorInput?.addEventListener('input', async (e) => {
         const newColor = (e.target as HTMLInputElement).value;
         updateActiveItem('backgroundColor', newColor);
+        await updatePreview();
+    });
+
+    menuOptionInput?.addEventListener('input', async (e) => {
+        const value = (e.target as HTMLInputElement).value;
+        updateActiveItem('option', value);
+        
+        // Highlight input as invalid if empty in SIMPLE mode
+        if (state.menuType === MenuType.SIMPLE) {
+            if (value.trim() === '') {
+                menuOptionInput.classList.add('border-red-500');
+            } else {
+                menuOptionInput.classList.remove('border-red-500');
+            }
+        }
+        
         await updatePreview();
     });
 
@@ -115,11 +245,25 @@ export function initShortcutMenu(): void {
 
     // Copy button handler
     copyButton?.addEventListener('click', () => {
+        // Validate simple menu fields before copying
+        if (state.menuType === MenuType.SIMPLE) {
+            const hasInvalidItems = validateMenuItems();
+            if (hasInvalidItems) {
+                return; // Stop if validation failed
+            }
+        }
         copyToClipboard(notification ?? undefined);
     });
 
     // Download button handler
     downloadButton?.addEventListener('click', async () => {
+        // Validate simple menu fields before downloading
+        if (state.menuType === MenuType.SIMPLE) {
+            const hasInvalidItems = validateMenuItems();
+            if (hasInvalidItems) {
+                return; // Stop if validation failed
+            }
+        }
         await downloadData();
     });
 
@@ -241,4 +385,77 @@ export function initShortcutMenu(): void {
             updatePreview();
         }
     });
+
+    // Add this validation helper function
+    function validateMenuItems(): boolean {
+        // Only validate for SIMPLE menu type
+        if (state.menuType !== MenuType.SIMPLE) return false;
+        
+        let hasInvalidItems = false;
+        let errorMessage = '';
+        
+        // Check each menu item for required fields
+        state.menuItems.forEach((item, index) => {
+            // Create an item identifier for the error message
+            const itemName = item.title || `Item #${index + 1}`;
+            
+            // For simple menu, subtitle and option are required
+            if (!item.subtitle || item.subtitle.trim() === '') {
+                hasInvalidItems = true;
+                errorMessage += `• "${itemName}" is missing Option Subtitle\n`;
+            } else if (item.subtitle.includes(' ')) {
+                hasInvalidItems = true;
+                errorMessage += `• "${itemName}" has spaces in Option Subtitle\n`;
+            }
+            
+            if (!item.option || item.option.trim() === '') {
+                hasInvalidItems = true;
+                errorMessage += `• "${itemName}" is missing Second Column value\n`;
+            }
+        });
+        
+        if (hasInvalidItems) {
+            alert(`Please fix the following issues before continuing:\n\n${errorMessage}\n\nIn Two Column Menu mode, both Option Subtitle and Second Column are required, and Option Subtitle cannot contain spaces.`);
+        }
+        
+        return hasInvalidItems;
+    }
+}
+/**
+ * Returns the current preview text for the VCARD output
+ */
+async function getPreviewText(): Promise<string> {
+    // Wait for all icons to be loaded
+    await waitForLucide();
+    
+    // Generate VCARD data based on current state
+    const activeItem = getActiveItem();
+    
+    // Create a basic preview of the VCARD data
+    let previewText = 'BEGIN:VCARD\nVERSION:3.0\n';
+    
+    // Add menu title as FN (Full Name)
+    if (activeItem.title) {
+        previewText += `FN:${activeItem.title}\n`;
+    }
+    
+    // Add menu subtitle as NOTE
+    if (activeItem.subtitle) {
+        previewText += `NOTE:${activeItem.subtitle}\n`;
+    }
+    
+    // Add menu data as URL
+    if (activeItem.data) {
+        previewText += `URL:${activeItem.data}\n`;
+    }
+    
+    // Show different preview based on menu type
+    previewText += `X-MENU-TYPE:${state.menuType}\n`;
+    
+    if (state.menuType === MenuType.ICON && activeItem.iconName) {
+        previewText += `X-ICON:${activeItem.iconName}\n`;
+    }
+    
+    previewText += 'END:VCARD';
+    return previewText;
 }

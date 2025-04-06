@@ -1,7 +1,11 @@
 /**
  * State management
  */
+import { MenuType } from './types';
 import type { MenuDataItem, GlobalState } from './types';
+
+// Re-export MenuType for other files to import
+export { MenuType };
 
 // Function to determine if dark mode is active
 function isDarkModeActive(): boolean {
@@ -17,7 +21,7 @@ function getInitialColors() {
     };
 }
 
-// Initial state with one menu item
+// Initial state with menu type
 export const state: GlobalState = {
     menuItems: [{
         id: crypto.randomUUID(),
@@ -26,11 +30,13 @@ export const state: GlobalState = {
         iconName: "",
         data: "",
         iconColor: "#000000", // This will be updated in init function
-        backgroundColor: "#ffffff" // This will be updated in init function
+        backgroundColor: "#ffffff", // This will be updated in init function
+        option: ""
     }],
     activeItemIndex: 0,
     isCircular: true,
-    isAdvancedMode: false
+    isAdvancedMode: false,
+    menuType: MenuType.ICON // Default to icon menu
 };
 
 /**
@@ -53,7 +59,8 @@ export function addMenuItem(): MenuDataItem {
         iconName: "",
         data: "",
         iconColor: "#000000", 
-        backgroundColor: "#ffffff"
+        backgroundColor: "#ffffff",
+        option: "" // New field
     };
     state.menuItems.push(newItem);
     state.activeItemIndex = state.menuItems.length - 1;
@@ -111,12 +118,14 @@ export function syncFormToActiveItem(): void {
     const menuTitleInput = document.getElementById('menu-title') as HTMLInputElement;
     const menuSubtitleInput = document.getElementById('menu-subtitle') as HTMLInputElement;
     const menuDataInput = document.getElementById('menu-data') as HTMLInputElement;
+    const menuOptionInput = document.getElementById('menu-option') as HTMLInputElement;
     const iconColorInput = document.getElementById('icon-color') as HTMLInputElement;
     const bgColorInput = document.getElementById('bg-color') as HTMLInputElement;
     
     if (menuTitleInput) menuTitleInput.value = item.title || '';
     if (menuSubtitleInput) menuSubtitleInput.value = item.subtitle || '';
     if (menuDataInput) menuDataInput.value = item.data || '';
+    if (menuOptionInput) menuOptionInput.value = item.option || '';
     if (iconColorInput) iconColorInput.value = item.iconColor;
     if (bgColorInput) bgColorInput.value = item.backgroundColor;
 }
@@ -136,6 +145,13 @@ export function toggleAdvancedMode(isAdvanced: boolean): void {
 }
 
 /**
+ * Add function to toggle menu type
+ */
+export function toggleMenuType(type: MenuType): void {
+    state.menuType = type;
+}
+
+/**
  * Reset the state to initial values
  */
 export function resetState(): void {
@@ -148,14 +164,16 @@ export function resetState(): void {
         subtitle: "",
         iconName: "",
         data: "",
-        iconColor: colors.iconColor,
-        backgroundColor: colors.backgroundColor
+        iconColor: colors.iconColor || "#000000",
+        backgroundColor: colors.backgroundColor || "#ffffff",
+        option: ""
     }];
     
     // Reset indexes and settings
     state.activeItemIndex = 0;
     state.isCircular = true;
     state.isAdvancedMode = false;
+    // Don't reset menuType to preserve user's preference
 }
 
 /**

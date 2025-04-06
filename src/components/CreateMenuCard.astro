@@ -3,18 +3,73 @@ import Card from './Card.astro';
 ---
 
 <Card title="Create Your Menu" headerRight={true} class="flex flex-col">
-  <div slot="header-right">
+  <!-- Move the radio buttons to the header-right slot with better spacing for Safari -->
+  <div slot="header-right" class="flex items-center gap-3">
+    <!-- Menu Type Selection - Only visible on large screens -->
+    <div class="hidden lg:flex items-center space-x-5">
+      <label class="inline-flex items-center whitespace-nowrap">
+        <input 
+          type="radio" 
+          name="menu-type" 
+          value="icon" 
+          class="form-radio h-5 w-5 text-indigo-600 flex-shrink-0" 
+          checked 
+          id="menu-type-icon"
+        >
+        <span class="ml-1.5 text-sm text-gray-700 dark:text-gray-300">Icon Menu</span>
+      </label>
+      <label class="inline-flex items-center whitespace-nowrap">
+        <input 
+          type="radio" 
+          name="menu-type" 
+          value="simple" 
+          class="form-radio h-5 w-5 text-indigo-600 flex-shrink-0"
+          id="menu-type-simple"
+        >
+        <span class="ml-1.5 text-sm text-gray-700 dark:text-gray-300">Two Column</span>
+      </label>
+    </div>
+    
+    <!-- Reset Button - Now with more spacing from the radio buttons -->
     <button
       id="reset-button"
-      class="inline-flex items-center rounded-full bg-gray-200 dark:bg-gray-700 p-2 text-gray-600 dark:text-gray-300 shadow-sm hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+      class="inline-flex items-center rounded-full bg-gray-200 dark:bg-gray-700 p-2 text-gray-600 dark:text-gray-300 shadow-sm hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex-shrink-0 ml-2"
       aria-label="Reset all menu items"
       title="Reset all menu items"
     >
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
     </button>
   </div>
+  
+  <!-- Menu Type Selection for medium and small screens -->
+  <div class="lg:hidden mb-6">
+    <div class="flex items-start justify-left space-x-6">
+      <label class="inline-flex items-center">
+        <input 
+          type="radio" 
+          name="menu-type-mobile" 
+          value="icon" 
+          class="form-radio h-5 w-5 text-indigo-600" 
+          checked 
+          id="menu-type-icon-mobile"
+        >
+        <span class="ml-2 text-gray-700 dark:text-gray-300">Icon Menu</span>
+      </label>
+      <label class="inline-flex items-center">
+        <input 
+          type="radio" 
+          name="menu-type-mobile" 
+          value="simple" 
+          class="form-radio h-5 w-5 text-indigo-600"
+          id="menu-type-simple-mobile"
+        >
+        <span class="ml-2 text-gray-700 dark:text-gray-300">Two Column</span>
+      </label>
+    </div>
+  </div>
+  
   <!-- Main content -->
-  <div class="flex-1 flex flex-col mb-2">
+  <div class="flex-1 flex flex-col">
     <div class="flex-1 flex flex-col space-y-8">
       <!-- Menu Content Form -->
       <form id="menuForm" class="space-y-6">
@@ -34,10 +89,12 @@ import Card from './Card.astro';
                   dark:focus:border-indigo-400"
           >
         </div>
+        
         <!-- Subtitle Input -->
         <div class="form-group">
           <label for="menu-subtitle" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
-            Option Subtitle
+            <span id="subtitle-label">Option Subtitle</span>
+            <span id="subtitle-required" class="ml-1 text-red-500 hidden">*</span>
           </label>
           <input 
             type="text" 
@@ -50,6 +107,25 @@ import Card from './Card.astro';
                   dark:focus:border-indigo-400"
           >
         </div>
+        
+        <!-- Option Input - For Two-Column Menu Type -->
+        <div class="form-group menu-simple-field hidden">
+          <label for="menu-option" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+            Second Column (Required)
+            <span class="ml-1 text-red-500">*</span>
+          </label>
+          <input 
+            type="text" 
+            id="menu-option" 
+            name="menu-option"
+            placeholder="Enter Text For Second Column (Required)..." 
+            class="w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 
+                  text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-2 
+                  focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-indigo-500 
+                  dark:focus:border-indigo-400"
+          >
+        </div>
+        
         <!-- Data Input -->
         <div class="form-group">
           <label for="menu-data" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
@@ -67,8 +143,9 @@ import Card from './Card.astro';
           >
         </div>
       </form>
-      <!-- Icon Section -->
-      <div class="space-y-6">
+      
+      <!-- Icon Section - Only for Icon Menu Type -->
+      <div class="space-y-6 menu-icon-field mb-2">
         <!-- Icon Input -->
         <div class="form-group">
           <div class="flex justify-between items-center mb-2">
@@ -168,6 +245,17 @@ import Card from './Card.astro';
             Note: Custom uploaded images use their original colors and ignore color settings.
           </p>
         </div>
+      </div>
+      
+      <!-- Add note at the bottom of the card -->
+      <div class="menu-simple-field hidden my-1.5 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+        <h4 class="font-medium text-indigo-800 dark:text-white mb-1">Two Column Menu Notes:</h4>
+        <ul class="text-sm text-indigo-700 dark:text-white list-disc pl-5">
+          <li class="mb-1">Subtitles can't contain spaces when using the <code class="px-1 py-0.5 bg-indigo-100 dark:bg-indigo-800 rounded">TEL</code> field.</li>
+          <li class="mb-1">Must use <code class="px-1 py-0.5 bg-indigo-100 dark:bg-indigo-800 rounded">Choose from Phone Numbers</code> Action in your Shortcut.</li>
+          <li>Check out gluebyte's <a href="https://talk.automators.fm/t/tip-vcard-menu-guide/17851" target="_blank" rel="noopener" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 underline">vCard Menu Guide</a> for more tips on VCards.</li>
+          <li>Also, <a href="https://routinehub.co/shortcut/19228/" target="_blank" rel="noopener" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 underline">vCard Menu Editor</a> on RoutineHub.</li>
+        </ul>
       </div>
     </div>
   </div>

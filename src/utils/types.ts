@@ -2,6 +2,12 @@
  * Type definitions for the Shortcut Menu application
  */
 
+// Add menu type enum
+export enum MenuType {
+  ICON = 'icon',
+  SIMPLE = 'simple'
+}
+
 // Single menu item data structure
 export interface MenuDataItem {
     id: string;
@@ -13,6 +19,7 @@ export interface MenuDataItem {
     data: string;
     iconColor: string;
     backgroundColor: string;
+    option?: string;
 }
 
 // Global application state
@@ -21,6 +28,9 @@ export interface GlobalState {
     activeItemIndex: number;
     isCircular: boolean;
     isAdvancedMode: boolean;
+    menuTitle?: string;
+    menuData?: string;
+    menuType: MenuType;
 }
 
 // Type for export formats

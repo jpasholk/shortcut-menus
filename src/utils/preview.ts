@@ -1,11 +1,10 @@
 /**
  * Preview generation for menu data
  */
-import { state } from './menuState';
+import { state, MenuType } from './menuState';
 
 /**
- * Generate preview text for showing in the UI
- * Shows placeholder data without actual base64 icons
+ * Generate preview text for the current menu
  */
 export async function getPreviewText(): Promise<string> {
     if (state.isAdvancedMode) {
@@ -34,39 +33,66 @@ export async function getPreviewText(): Promise<string> {
         
         return JSON.stringify(output, null, 2);
     } else {
-        // Create VCARD preview with placeholder
+        // vCard preview
         let vCardOutput = '';
         
         for (const item of state.menuItems) {
-            let iconPlaceholder;
-            
-            if (item.customImageData) {
-                // Custom uploaded image
-                iconPlaceholder = "{Custom uploaded image...}";
-            } else if (item.iconName) {
-                // Lucide icon
-                iconPlaceholder = `{${item.iconName} icon...}`;
-            } else {
-                // No icon
-                iconPlaceholder = "";
-            }
-            
-            vCardOutput += `BEGIN:VCARD
+            // Different preview based on menu type
+            if (state.menuType === MenuType.ICON) {
+                // Icon menu preview
+                let iconPlaceholder;
+                
+                if (item.customImageData) {
+                    iconPlaceholder = "{Custom uploaded image...}";
+                } else if (item.iconName) {
+                    iconPlaceholder = `{${item.iconName} icon...}`;
+                } else {
+                    iconPlaceholder = "{default icon...}";
+                }
+                
+                vCardOutput += `BEGIN:VCARD
 VERSION:3.0
-N:${item.title || ''}
-ORG:${item.subtitle || ''}`;
+N:${item.title || 'Title'}
+ORG:${item.subtitle || 'Subtitle'}`;
 
-            // Only include NOTE field if data is not empty
-            if (item.data && item.data.trim()) {
-                vCardOutput += `
+                // Only include NOTE if it has content
+                if (item.data && item.data.trim()) {
+                    vCardOutput += `
 NOTE:${item.data}`;
-            }
-            
-            vCardOutput += `
+                }
+                
+                vCardOutput += `
 PHOTO;BASE64:${iconPlaceholder}
 END:VCARD
 
 `;
+            } else {
+                // Simple menu preview
+                vCardOutput += `BEGIN:VCARD
+VERSION:3.0
+N:${item.title || 'Title'}`;
+
+                // Only include TEL field if subtitle has content
+                if (item.subtitle && item.subtitle.trim()) {
+                    // Use the option value if available, otherwise use a default
+                    const optionType = item.option && item.option.trim() ? item.option : 'CELL';
+                    // Remove spaces from subtitle for TEL field
+                    const formattedSubtitle = item.subtitle.replace(/\s+/g, '');
+                    vCardOutput += `
+TEL;TYPE=${optionType}:${formattedSubtitle}`;
+                }
+
+                // Only include NOTE if it has content
+                if (item.data && item.data.trim()) {
+                    vCardOutput += `
+NOTE:${item.data}`;
+                }
+                
+                vCardOutput += `
+END:VCARD
+
+`;
+            }
         }
         
         return vCardOutput.trim();

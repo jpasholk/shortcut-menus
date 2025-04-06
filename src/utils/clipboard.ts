@@ -1,7 +1,7 @@
 /**
  * Clipboard operations for menu data
  */
-import { state } from './menuState';
+import { state, MenuType } from './menuState';
 import { svgToPngBase64 } from './icons';
 
 /**
@@ -63,44 +63,73 @@ export function copyToClipboard(notification?: HTMLElement): void {
                 
                 outputData = JSON.stringify(output, null, 2);
             } else {
-                // Generate VCARD data with actual base64 icons
+                // Generate VCARD data with actual base64 icons or simple format
                 let vCardOutput = '';
                 
                 for (const item of state.menuItems) {
-                    // Handle custom image or Lucide icon with error fallback
-                    let iconData;
-                    try {
-                        if (item.customImageData) {
-                            // Extract base64 part from custom image data
-                            iconData = item.customImageData.replace(/^data:image\/[a-z]+;base64,/, '');
-                        } else {
-                            // Generate from icon name
-                            iconData = await svgToPngBase64(item.iconName || 'home');
+                    if (state.menuType === MenuType.ICON) {
+                        // Handle custom image or Lucide icon with error fallback
+                        let iconData;
+                        try {
+                            if (item.customImageData) {
+                                // Extract base64 part from custom image data
+                                iconData = item.customImageData.replace(/^data:image\/[a-z]+;base64,/, '');
+                            } else {
+                                // Generate from icon name
+                                iconData = await svgToPngBase64(item.iconName || 'home');
+                            }
+                        } catch (err) {
+                            console.warn("Icon conversion failed, using fallback:", err);
+                            // Transparent pixel fallback
+                            iconData = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
                         }
-                    } catch (err) {
-                        console.warn("Icon conversion failed, using fallback:", err);
-                        // Transparent pixel fallback
-                        iconData = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
-                    }
-                    
-                    // Start building the vCard
-                    vCardOutput += `BEGIN:VCARD
+                        
+                        // Icon Menu vCard format
+                        vCardOutput += `BEGIN:VCARD
 VERSION:3.0
 N:${item.title}
 ORG:${item.subtitle}`;
 
-                    // Only include NOTE field if data exists and isn't empty
-                    if (item.data && item.data.trim()) {
-                        vCardOutput += `
+                        // Only include NOTE field if data exists and isn't empty
+                        if (item.data && item.data.trim()) {
+                            vCardOutput += `
 NOTE:${item.data}`;
-                    }
-                    
-                    // Complete the vCard
-                    vCardOutput += `
+                        }
+                        
+                        vCardOutput += `
 PHOTO;BASE64:${iconData}
 END:VCARD
 
 `;
+                    } else {
+                        // Simple Menu vCard format
+                        vCardOutput += `BEGIN:VCARD
+VERSION:3.0
+N:${item.title}`;
+
+                        // Only include TEL field if subtitle has content
+                        if (item.subtitle && item.subtitle.trim()) {
+                            // Use the option value if available, otherwise default to CELL
+                            const optionType = item.option && item.option.trim() ? item.option : 'CELL';
+                            
+                            // Remove spaces from subtitle for TEL field
+                            const formattedSubtitle = item.subtitle.replace(/\s+/g, '');
+                            
+                            vCardOutput += `
+TEL;TYPE=${optionType}:${formattedSubtitle}`;
+                        }
+
+                        // Only include NOTE field if data exists and isn't empty
+                        if (item.data && item.data.trim()) {
+                            vCardOutput += `
+NOTE:${item.data}`;
+                        }
+                        
+                        vCardOutput += `
+END:VCARD
+
+`;
+                    }
                 }
                 
                 outputData = vCardOutput.trim();
