@@ -52,14 +52,17 @@ export function initializeState(): void {
  * Add a new menu item to the state
  */
 export function addMenuItem(): MenuDataItem {
+    // Get colors based on current system preference
+    const colors = getInitialColors();
+    
     const newItem: MenuDataItem = {
         id: crypto.randomUUID(),
         title: "",
         subtitle: "",
         iconName: "",
         data: "",
-        iconColor: "#000000", 
-        backgroundColor: "#ffffff",
+        iconColor: colors.iconColor, // Use dynamic color based on theme
+        backgroundColor: colors.backgroundColor, // Use dynamic color based on theme
         option: "" // New field
     };
     state.menuItems.push(newItem);

@@ -34,14 +34,14 @@ All commands are run from the root of the project, from a terminal:
 
 ## 💡 Output Formats
 
-### VCARD Format
+### Regular VCARD Format
 ```text
 BEGIN:VCARD
 VERSION:3.0
-N:
-ORG:
-NOTE:
-PHOTO;BASE64:
+N:Title
+ORG:Subtitle
+NOTE:Data
+PHOTO;BASE64:{base64 icon string...}
 END:VCARD
 ```
 
@@ -50,13 +50,24 @@ END:VCARD
 {
   "menu": {
     "optionOne": {
-      "title": "[title]",
-      "icon": "[base64]",
-      "sub": "[subtitle]",
-      "data": "[data]"
+      "title": "Title",
+      "sub": "Subtitle",
+      "icon": "{base64 icon string...}",
+      "data": "Data"
     }
   }
 }
+```
+
+## Two Column VCARD Format
+
+```text
+BEGIN:VCARD
+VERSION:3.0
+N:Title
+TEL;TYPE=Option:Subtitle
+NOTE:Data
+END:VCARD
 ```
 
 ## 🎨 Technologies Used
