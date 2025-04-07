@@ -4,28 +4,39 @@
 import { state, MenuType } from './menuState';
 
 /**
- * Generate preview text for the current menu
+ * Get the preview text for the currently selected format and menu
  */
 export async function getPreviewText(): Promise<string> {
     if (state.isAdvancedMode) {
-        // Create JSON preview with placeholder for icon data
+        // JSON preview
         const output = { menu: {} as Record<string, any> };
         
         for (let i = 0; i < state.menuItems.length; i++) {
             const item = state.menuItems[i];
-            const menuItem: Record<string, any> = {
-                title: item.title,
-                icon: "{base64 icon string...}"
-            };
             
-            // Only include subtitle if not empty
+            // Create the menu item object with properties in the desired order
+            const menuItem: Record<string, any> = {};
+            
+            // 1. Title always comes first
+            menuItem.title = item.title || "Title";
+            
+            // 2. Subtitle (sub) comes second if it exists
             if (item.subtitle && item.subtitle.trim()) {
                 menuItem.sub = item.subtitle;
             }
             
-            // Only include data if not empty
+            // 3. Data comes third if it exists
             if (item.data && item.data.trim()) {
                 menuItem.data = item.data;
+            }
+            
+            // 4. Icon comes last
+            if (item.customImageData) {
+                menuItem.icon = "{custom image...}";
+            } else if (item.iconName) {
+                menuItem.icon = `{${item.iconName} icon...}`;
+            } else {
+                menuItem.icon = "{icon...}";
             }
             
             output.menu[`option${i+1}`] = menuItem;
