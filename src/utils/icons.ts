@@ -105,8 +105,10 @@ export async function svgToPngBase64(iconName: string): Promise<string> {
                     }
                     
                     // Fill with background color
-                    ctx.fillStyle = item.backgroundColor || '#ffffff';
-                    ctx.fillRect(0, 0, 123, 123);
+                    if (!state.isTransparent) {
+                        ctx.fillStyle = item.backgroundColor || '#ffffff';
+                        ctx.fillRect(0, 0, 123, 123);
+                    }
                     
                     // Draw a colored placeholder 
                     ctx.fillStyle = item.iconColor || '#000000';
@@ -165,8 +167,10 @@ export async function svgToPngBase64(iconName: string): Promise<string> {
                         }
 
                         // Fill background color
-                        ctx.fillStyle = item.backgroundColor;
-                        ctx.fillRect(0, 0, 123, 123);
+                        if (!state.isTransparent) {
+                            ctx.fillStyle = item.backgroundColor;
+                            ctx.fillRect(0, 0, 123, 123);
+                        }
                         
                         // Calculate center position for 92x92 icon
                         const x = (123 - 92) / 2; // Center horizontally

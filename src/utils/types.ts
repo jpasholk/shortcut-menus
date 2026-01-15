@@ -27,6 +27,7 @@ export interface GlobalState {
     menuItems: MenuDataItem[];
     activeItemIndex: number;
     isCircular: boolean;
+    isTransparent: boolean;
     isAdvancedMode: boolean;
     menuTitle?: string;
     menuData?: string;

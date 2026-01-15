@@ -35,6 +35,7 @@ export const state: GlobalState = {
     }],
     activeItemIndex: 0,
     isCircular: true,
+    isTransparent: false,
     isAdvancedMode: false,
     menuType: MenuType.ICON // Default to icon menu
 };
@@ -141,6 +142,13 @@ export function toggleCircular(isCircular: boolean): void {
 }
 
 /**
+ * Toggle transparent background setting
+ */
+export function toggleTransparent(isTransparent: boolean): void {
+    state.isTransparent = isTransparent;
+}
+
+/**
  * Toggle advanced mode setting
  */
 export function toggleAdvancedMode(isAdvanced: boolean): void {
@@ -175,6 +183,7 @@ export function resetState(): void {
     // Reset indexes and settings
     state.activeItemIndex = 0;
     state.isCircular = true;
+    state.isTransparent = false;
     state.isAdvancedMode = false;
     // Don't reset menuType to preserve user's preference
 }
