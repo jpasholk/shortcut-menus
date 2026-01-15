@@ -97,7 +97,7 @@ export async function updatePreview(): Promise<void> {
             <i data-lucide="grip-vertical" class="w-4 h-4"></i>
           </div>
           <div class="w-10 h-10 flex items-center justify-center ${state.isCircular ? 'rounded-full' : 'rounded-lg'}"
-               style="background-color: ${item.backgroundColor}">
+               style="background-color: ${item.backgroundColor}${state.isTransparent ? '00' : 'aa'}">
             ${iconHtml}
           </div>
           <div class="flex-1">

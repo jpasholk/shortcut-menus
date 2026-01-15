@@ -10,6 +10,7 @@ import {
     updateActiveItem,
     getActiveItem,
     toggleCircular,
+    toggleTransparent,
     toggleAdvancedMode,
     resetState,
     initializeState,
@@ -41,6 +42,7 @@ export function initShortcutMenu(): void {
     const iconColorInput = document.getElementById('icon-color') as HTMLInputElement;
     const bgColorInput = document.getElementById('bg-color') as HTMLInputElement;
     const circularMaskToggle = document.getElementById('circular-mask') as HTMLInputElement;
+    const transparentBgToggle = document.getElementById('transparent-bg') as HTMLInputElement;
     const advancedToggle = document.getElementById('advanced-toggle') as HTMLInputElement;
     const addMenuItemButton = document.getElementById('add-menu-item');
     const resetButton = document.getElementById('reset-button');
@@ -205,6 +207,12 @@ export function initShortcutMenu(): void {
     // Toggle circular icons
     circularMaskToggle?.addEventListener('change', async (e) => {
         toggleCircular((e.target as HTMLInputElement).checked);
+        await updatePreview();
+    });
+
+    // Toggle transparent icon background
+    transparentBgToggle?.addEventListener('change', async (e) => {
+        toggleTransparent((e.target as HTMLInputElement).checked);
         await updatePreview();
     });
 
